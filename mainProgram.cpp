@@ -187,8 +187,6 @@ int main(){
 	//Vector of Vector of Bangunan
 	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
 	vector<Shapeclip> vec_bangunanClip = readBangunanAndJalanClip("DataGambar/dataBangunan.txt"); 
-	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataPohon.txt");
-
 	
 	//Vector of Shape of Jalan
 	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt"); 
