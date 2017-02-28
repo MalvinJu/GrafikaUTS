@@ -74,6 +74,10 @@ void makeTree(Point P, double zoomScale){
 
 //MAIN=========================================
 int main(){
+	int isPohonDrawn = 1;
+	int isBangunanDrawn = 1;
+	int isJalanDrawn = 1;
+	
 	linedrawer.setView(Point(2,2) , Point(screen.getWidth()/2-20, screen.getHeight()-30));
 	
 	/* MEMBUAT KOTAK*/
@@ -145,11 +149,50 @@ int main(){
 				case 'd':
 					kotak.moveBy(10, 0);
 					break;
-			case 61:
+			case 61: 	//Tombol +
 				cout << "+ was pressed \n";
 				break;
-			case 45:
+			case 45: 	//Tombol -
 				cout << "- was pressed \n";
+				break;
+			case '1': 	//Trigger Tampilan Bangunan
+				if (isBangunanDrawn == 1){
+					isBangunanDrawn = 0;
+					for(int i = 0; i < vec_bangunan.size(); i++){
+						vec_bangunan[i].erase();
+					}
+				} else {
+					isBangunanDrawn = 1;
+					for(int i = 0; i < vec_bangunan.size(); i++){
+						vec_bangunan[i].draw();
+					}
+				}
+				break;
+			case '2': 	//Trigger Tampilan Pohon
+				if (isPohonDrawn == 1){
+					isPohonDrawn = 0;
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].erase();
+					}
+				} else {
+					isPohonDrawn = 1;
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].draw();
+					}
+				}
+				break;
+			case '3': 	//Trigger Tampilan Jalan
+				if (isJalanDrawn == 1){
+					isJalanDrawn = 0;
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].erase();
+					}
+				} else {
+					isJalanDrawn = 1;
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].draw();
+					}
+				}
 				break;
 			default:
 				break;
