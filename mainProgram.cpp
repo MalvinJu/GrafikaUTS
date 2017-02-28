@@ -15,16 +15,12 @@
 #include <sys/ioctl.h>
 #include <pthread.h>
 #include <termios.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 
 //KEYPRESS HANDLER==============================
 static struct termios old, news;
-	
+
 /*Init Termios*/
 void initTermios(int echo) 
 {
@@ -64,6 +60,8 @@ Screen screen;
 LineDrawer linedrawer;
 LineDrawer linedrawer2;
 vector<Shape> vektorShapePohon;
+double xpusat = screen.getWidth()/4;
+double ypusat = screen.getHeight()/2;
 
 
 /*MEMBUAT POHON*/
@@ -76,26 +74,49 @@ void makeTree(Point P, double zoomScale){
 	vektorShapePohon.push_back(pohon);	
 }
 
+
 //MAIN=========================================
 int main(){
-	int isPohonDrawn = 0;
+	int isPohonDrawn = 1;
 	int isBangunanDrawn = 1;
-	int isJalanDrawn = 0;
+	int isJalanDrawn = 1;
+	double zoomScale;
+	int deltaX;
+	int deltaY;
 	
-	linedrawer.setView(Point(2,2) , Point(screen.getWidth()/2-20, screen.getHeight()-30));
-	linedrawer2.setView(Point(770,100) , Point(930, 280));
-	/* MEMBUAT KOTAK*/
+	// BAGIAN LAYAR CLIPPING
+	linedrawer.setView(Point(0,0) , Point(screen.getWidth()/2, screen.getHeight()-1));
+	linedrawer2.setView(Point(screen.getWidth()/2, 0) , Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
+	
+	/* BAGIAN KANAN YANG KECIL */
 	vector<Point> body;
-	body.push_back(Point(20,50));
-	body.push_back(Point(80,50));
-	body.push_back(Point(80,110));
-	body.push_back(Point(20,110));
-	Shape kotak(body, Color(255,255,255));
+	body.push_back(Point(screen.getWidth()/2, 0));
+	body.push_back(Point(screen.getWidth()/2 + 0.25*screen.getWidth(), 0));
+	body.push_back(Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
+	body.push_back(Point(screen.getWidth()/2, screen.getHeight()/2));
+	Shapeclip kotak(body, Color(255,255,255));
 	kotak.draw();
 	
+	Point centerKotak((screen.getWidth()/2 + screen.getWidth()/8), (screen.getHeight()/4));
+	
+	vector<Shapeclip> vec_bangunanClip = readBangunanAndJalanClip("DataGambar/dataBangunan.txt"); 
+	int titikAwalX = screen.getWidth()/2;
+	int titikAwalY = 0;
+	int scalefactor = 2;
+	for(int i = 0; i < vec_bangunanClip.size(); i++){
+		for(int j = 0; j < vec_bangunanClip[i].edges.size(); j++){
+			vec_bangunanClip[i].edges[j].x *= 1;
+			vec_bangunanClip[i].edges[j].y *= 1;
+		}
+		vec_bangunanClip[i].moveBy(screen.getWidth()/2, 0);
+		vec_bangunanClip[i].draw();
+	}
+	
+	
+	
+	/*BAGIAN KIRI YANG BESAR*/
 	//Vector of Vector of Bangunan
 	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
-	vector<Shapeclip> vec_bangunanClip = readBangunanAndJalanClip("DataGambar/dataBangunan.txt"); 
 	
 	//Vector of Shape of Jalan
 	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt"); 
@@ -103,41 +124,38 @@ int main(){
 	//Vector of Point of Pohon
 	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
 	
-	//Gambar Bangunan
-	for(int i = 0; i < vec_bangunan.size(); i++){
-		vec_bangunan[i].draw();
-	}
-	int titikAwalX = 730;
-	int titikAwalY = 0;
-	int scalefactor = 2;
-	for(int i = 0; i < vec_bangunanClip.size(); i++){
-		for(int j=0; j<vec_bangunanClip[i].edges.size(); j++){
-			vec_bangunanClip[i].edges[j].x *= 2;
-			vec_bangunanClip[i].edges[j].y *= 2;
-		}	
-	}
-	
-	for(int i = 0; i < vec_bangunanClip.size(); i++){
-		vec_bangunanClip[i].moveBy(750, 0);
-		vec_bangunanClip[i].draw();	
-	}
-	
-	//Gambar Jalan
-	for(int i = 0; i < vec_jalan.size(); i++){
-		vec_jalan[i].draw();
-	}
-	
 	//Buat Vektor Shape Pohon
 	for(int i = 0; i < Pohon.size(); i++){
 		makeTree(Pohon[i], 1);		
 	}
 	
-	//Gambar Pohon
-	for(int i=0; i < vektorShapePohon.size(); i++){
+	//SCALING
+	for(int i = 0; i < vec_bangunan.size(); i++){
+		for(int j = 0; j < vec_bangunan[i].edges.size(); j++){
+			vec_bangunan[i].edges[j].x *= 2;
+			vec_bangunan[i].edges[j].y *= 2;
+		}
+		vec_bangunan[i].draw();
+	}
+	
+	for(int i = 0; i < vektorShapePohon.size(); i++){
+		for(int j = 0; j < vektorShapePohon[i].edges.size(); j++){
+			vektorShapePohon[i].edges[j].x *= 2;
+			vektorShapePohon[i].edges[j].y *= 2;
+		}
 		vektorShapePohon[i].draw();
 	}
 	
-	/*GERAKAN KOTAK*/
+	for(int i = 0; i < vec_jalan.size(); i++){
+		for(int j = 0; j < vec_jalan[i].edges.size(); j++){
+			vec_jalan[i].edges[j].x *= 2;
+			vec_jalan[i].edges[j].y *= 2;
+		}
+		vec_jalan[i].draw();
+	}
+	
+	
+	/*GERAKAN*/
     while(1){
         int c = getch();
 		int n;
@@ -146,144 +164,236 @@ int main(){
 			case 'W':
 				case 'w':
 					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].erase();
+						vec_bangunan[i].moveBy(0, -5);
+						if (isBangunanDrawn == 1) {
+							vec_bangunan[i].draw();
+						}	
 					}
-					kotak.moveBy(0, -10);
-					
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].moveBy(0, -5);
+						if (isPohonDrawn == 1) {
+							vektorShapePohon[i].draw();
+						}	
+					}
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].moveBy(0, -5);
+						if (isJalanDrawn == 1) {
+							vec_jalan[i].draw();
+						}	
+					}
+					//CLIP
+					kotak.moveBy(0, 5/2);
+					centerKotak.moveBy(0, 5/2);
 					for(int i = 0; i < vec_bangunanClip.size(); i++){
 						vec_bangunanClip[i].erase();
-					}
-					titikAwalX += 0;
-					titikAwalY += 10; 
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].moveBy(0, 10*scalefactor);
 						vec_bangunanClip[i].draw();
-					}
-	
-					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].draw();
-						
 					}
 					break;
 			case 'A':
 				case 'a':
 					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].erase();
+						vec_bangunan[i].moveBy(-5, 0);
+						if (isBangunanDrawn == 1) {
+							vec_bangunan[i].draw();
+						}	
 					}
-					kotak.moveBy(-10, 0);
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].moveBy(-5, 0);
+						if (isPohonDrawn == 1) {
+							vektorShapePohon[i].draw();
+						}
+					}
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].moveBy(-5, 0);
+						if (isJalanDrawn == 1) {
+							vec_jalan[i].draw();
+						}
+					}
+					//CLIP
+					kotak.moveBy(5/2, 0);
+					centerKotak.moveBy(5/2, 0);
 					for(int i = 0; i < vec_bangunanClip.size(); i++){
 						vec_bangunanClip[i].erase();
-					}
-					
-					titikAwalX += 10;
-					titikAwalY -= 0; 
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].moveBy(10*scalefactor, 0);
 						vec_bangunanClip[i].draw();
-					}
-					
-					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].draw();
 					}
 					break;
 			case 's':
 				case 'S':
 					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].erase();
+						vec_bangunan[i].moveBy(0, 5);
+						if (isBangunanDrawn == 1) {
+							vec_bangunan[i].draw();
+						}	
 					}
-					kotak.moveBy(0, 10);
-					titikAwalX += 0;
-					titikAwalY -= 10; 
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].moveBy(0, 5);
+						if (isPohonDrawn == 1) {
+							vektorShapePohon[i].draw();
+						}
+					}
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].moveBy(0, 5);
+						if (isJalanDrawn == 1) {
+							vec_jalan[i].draw();
+						}
+					}
+					//CLIP
+					kotak.moveBy(0, -5/2);
+					centerKotak.moveBy(0, -5/2);
 					for(int i = 0; i < vec_bangunanClip.size(); i++){
 						vec_bangunanClip[i].erase();
-					}
-					
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].moveBy(0, -10*scalefactor);
 						vec_bangunanClip[i].draw();
-					}
-					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].draw();
 					}
 					break;
 			case 'D':
 				case 'd':
 					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].erase();
+						vec_bangunan[i].moveBy(5, 0);
+						if (isBangunanDrawn == 1) {
+							vec_bangunan[i].draw();
+						}	
 					}
-					kotak.moveBy(10, 0);
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].moveBy(5, 0);
+						if (isPohonDrawn == 1) {
+							vektorShapePohon[i].draw();
+						}
+					}
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].moveBy(5, 0);
+						if (isJalanDrawn == 1) {
+							vec_jalan[i].draw();
+						}
+					}
+					//CLIP
+					kotak.moveBy(-5/2, 0);
+					centerKotak.moveBy(-5/2, 0);
 					for(int i = 0; i < vec_bangunanClip.size(); i++){
 						vec_bangunanClip[i].erase();
-					}
-					titikAwalX -= 10;
-					titikAwalY -= 0; 
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].moveBy(-10*scalefactor, 0);
 						vec_bangunanClip[i].draw();
-					}
-					
-					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].draw();
 					}
 					break;
-			case 'I':
-				case 'i':
-					scalefactor += 0.5;
-					for(int i = 0; i < vec_bangunan.size(); i++){
+			case 61: 	//Tombol +
+				zoomScale = 0.05;
+				
+				kotak.erase();
+				for (int i = 0; i < kotak.edges.size(); i++) {
+					deltaX = kotak.edges[i].x - centerKotak.x;
+					deltaY = kotak.edges[i].y - centerKotak.y;
+					deltaX = deltaX * zoomScale;
+					deltaY = deltaY * zoomScale;
+					kotak.edges[i].x -= deltaX;
+					kotak.edges[i].y -= deltaY;
+				}
+				kotak.draw();
+				
+				for (int i = 0; i < vec_bangunan.size(); i++){
+					for (int j = 0; j < vec_bangunan[i].edges.size(); j++){
 						vec_bangunan[i].erase();
+						deltaX = vec_bangunan[i].edges[j].x - xpusat;
+						deltaY = vec_bangunan[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vec_bangunan[i].edges[j].x += deltaX;
+						vec_bangunan[i].edges[j].y += deltaY;
 					}
-					
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].erase();
-					}	
-								
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						for(int j=0; j<vec_bangunanClip[i].edges.size(); j++){
-							vec_bangunanClip[i].edges[j].x *= 1.5;
-							vec_bangunanClip[i].edges[j].y *= 1.5;
-						}	
-							
+				}
+				
+				for (int i = 0; i < vektorShapePohon.size(); i++){
+					for (int j = 0; j < vektorShapePohon[i].edges.size(); j++){
+						vektorShapePohon[i].erase();
+						deltaX = vektorShapePohon[i].edges[j].x - xpusat;
+						deltaY = vektorShapePohon[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vektorShapePohon[i].edges[j].x += deltaX;
+						vektorShapePohon[i].edges[j].y += deltaY;
 					}
-					
-					for(int i = 0; i < vec_bangunanClip.size(); i++){
-						vec_bangunanClip[i].moveBy(scalefactor*10-titikAwalX, scalefactor*10-titikAwalY);
-						vec_bangunanClip[i].draw();
+				}
+				
+				for (int i = 0; i < vec_jalan.size(); i++){
+					for (int j = 0; j < vec_jalan[i].edges.size(); j++){
+						vec_jalan[i].erase();
+						deltaX = vec_jalan[i].edges[j].x - xpusat;
+						deltaY = vec_jalan[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vec_jalan[i].edges[j].x += deltaX;
+						vec_jalan[i].edges[j].y += deltaY;
 					}
-					
-					for(int i = 0; i < vec_bangunan.size(); i++){
-						vec_bangunan[i].draw();
-					}
-					
+				}
+
+				for(int i = 0; i < vec_bangunan.size(); i++){
+					vec_bangunan[i].draw();
+				}
+				for(int i=0; i < vektorShapePohon.size(); i++){
+					vektorShapePohon[i].draw();
+				}
+				for(int i = 0; i < vec_jalan.size(); i++){
+					vec_jalan[i].draw();
+				}
 				break;
-				case 'O':
-					case 'o':
-						scalefactor -= 0.5;
-						for(int i = 0; i < vec_bangunan.size(); i++){
-							vec_bangunan[i].erase();
-						}
-						
-						for(int i = 0; i < vec_bangunanClip.size(); i++){
-							vec_bangunanClip[i].erase();
-						}	
-									
-						for(int i = 0; i < vec_bangunanClip.size(); i++){
-							for(int j=0; j<vec_bangunanClip[i].edges.size(); j++){
-								vec_bangunanClip[i].edges[j].x *= 0.5;
-								vec_bangunanClip[i].edges[j].y *= 0.5;
-							}	
-								
-						}
-						
-						for(int i = 0; i < vec_bangunanClip.size(); i++){
-							vec_bangunanClip[i].moveBy(scalefactor*10+titikAwalX, scalefactor*10+titikAwalY);
-							vec_bangunanClip[i].draw();
-						}
-						
-						for(int i = 0; i < vec_bangunan.size(); i++){
-							vec_bangunan[i].draw();
-						}
-					
-			case 'r': 	//Trigger Tampilan Bangunan
+			case 45: 	//Tombol -
+				zoomScale = 0.05;
+				
+				kotak.erase();
+				for (int i = 0; i < kotak.edges.size(); i++) {
+					deltaX = kotak.edges[i].x - centerKotak.x;
+					deltaY = kotak.edges[i].y - centerKotak.y;
+					deltaX = deltaX * zoomScale;
+					deltaY = deltaY * zoomScale;
+					kotak.edges[i].x += deltaX;
+					kotak.edges[i].y += deltaY;
+				}
+				kotak.draw();
+				
+				for (int i = 0; i < vec_bangunan.size(); i++){
+					for (int j = 0; j < vec_bangunan[i].edges.size(); j++){
+						vec_bangunan[i].erase();
+						deltaX = vec_bangunan[i].edges[j].x - xpusat;
+						deltaY = vec_bangunan[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vec_bangunan[i].edges[j].x -= deltaX;
+						vec_bangunan[i].edges[j].y -= deltaY;
+					}
+				}
+				
+				for (int i = 0; i < vektorShapePohon.size(); i++){
+					for (int j = 0; j < vektorShapePohon[i].edges.size(); j++){
+						vektorShapePohon[i].erase();
+						deltaX = vektorShapePohon[i].edges[j].x - xpusat;
+						deltaY = vektorShapePohon[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vektorShapePohon[i].edges[j].x -= deltaX;
+						vektorShapePohon[i].edges[j].y -= deltaY;
+					}
+				}
+				
+				for (int i = 0; i < vec_jalan.size(); i++){
+					for (int j = 0; j < vec_jalan[i].edges.size(); j++){
+						vec_jalan[i].erase();
+						deltaX = vec_jalan[i].edges[j].x - xpusat;
+						deltaY = vec_jalan[i].edges[j].y - ypusat;
+						deltaX = deltaX * zoomScale;
+						deltaY = deltaY * zoomScale;
+						vec_jalan[i].edges[j].x -= deltaX;
+						vec_jalan[i].edges[j].y -= deltaY;
+					}
+				}
+
+				for(int i = 0; i < vec_bangunan.size(); i++){
+					vec_bangunan[i].draw();
+				}
+				for(int i=0; i < vektorShapePohon.size(); i++){
+					vektorShapePohon[i].draw();
+				}
+				for(int i = 0; i < vec_jalan.size(); i++){
+					vec_jalan[i].draw();
+				}
+				break;
+			case '1': 	//Trigger Tampilan Bangunan
 				if (isBangunanDrawn == 1){
 					isBangunanDrawn = 0;
 					for(int i = 0; i < vec_bangunan.size(); i++){
