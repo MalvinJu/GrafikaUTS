@@ -149,12 +149,30 @@ char getch(void)
 }
 //=============================================
 
+
+//VARIABEL GLOBAL
 Screen screen;
 LineDrawer linedrawer;
 LineDrawer linedrawer2;
+vector<Shape> vektorShapePohon;
+
+
+/*MEMBUAT POHON*/
+void makeTree(Point P, double zoomScale){
+	vector<Point> tree;
+	tree.push_back(P);
+	tree.push_back(Point(P.getX() + (5 * zoomScale), P.getY() + (5 * zoomScale)));
+	tree.push_back(Point(P.getX() - (5 * zoomScale), P.getY() + (5 * zoomScale)));
+	Shape pohon(tree, Color(50,255,50));
+	vektorShapePohon.push_back(pohon);	
+}
 
 //MAIN=========================================
 int main(){
+	int isPohonDrawn = 1;
+	int isBangunanDrawn = 1;
+	int isJalanDrawn = 1;
+	
 	linedrawer.setView(Point(2,2) , Point(screen.getWidth()/2-20, screen.getHeight()-30));
 	linedrawer2.setView(Point(770,100) , Point(930, 280));
 	/* MEMBUAT KOTAK*/
@@ -172,7 +190,13 @@ int main(){
 	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataPohon.txt");
 
 	
+	//Vector of Shape of Jalan
+	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt"); 
+
+	//Vector of Point of Pohon
+	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
 	
+	//Gambar Bangunan
 	for(int i = 0; i < vec_bangunan.size(); i++){
 		vec_bangunan[i].draw();
 	}
@@ -189,6 +213,21 @@ int main(){
 	for(int i = 0; i < vec_bangunanClip.size(); i++){
 		vec_bangunanClip[i].moveBy(750, 0);
 		vec_bangunanClip[i].draw();	
+	}
+	
+	//Gambar Jalan
+	for(int i = 0; i < vec_jalan.size(); i++){
+		vec_jalan[i].draw();
+	}
+	
+	//Buat Vektor Shape Pohon
+	for(int i = 0; i < Pohon.size(); i++){
+		makeTree(Pohon[i], 1);		
+	}
+	
+	//Gambar Pohon
+	for(int i=0; i < vektorShapePohon.size(); i++){
+		vektorShapePohon[i].draw();
 	}
 	
 	/*GERAKAN KOTAK*/
@@ -337,9 +376,44 @@ int main(){
 							vec_bangunan[i].draw();
 						}
 					
+			case '1': 	//Trigger Tampilan Bangunan
+				if (isBangunanDrawn == 1){
+					isBangunanDrawn = 0;
+					for(int i = 0; i < vec_bangunan.size(); i++){
+						vec_bangunan[i].erase();
+					}
+				} else {
+					isBangunanDrawn = 1;
+					for(int i = 0; i < vec_bangunan.size(); i++){
+						vec_bangunan[i].draw();
+					}
+				}
 				break;
-			case 45:
-				cout << "- was pressed \n";
+			case '2': 	//Trigger Tampilan Pohon
+				if (isPohonDrawn == 1){
+					isPohonDrawn = 0;
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].erase();
+					}
+				} else {
+					isPohonDrawn = 1;
+					for(int i=0; i < vektorShapePohon.size(); i++){
+						vektorShapePohon[i].draw();
+					}
+				}
+				break;
+			case '3': 	//Trigger Tampilan Jalan
+				if (isJalanDrawn == 1){
+					isJalanDrawn = 0;
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].erase();
+					}
+				} else {
+					isJalanDrawn = 1;
+					for(int i = 0; i < vec_jalan.size(); i++){
+						vec_jalan[i].draw();
+					}
+				}
 				break;
 			default:
 				break;
