@@ -69,7 +69,7 @@ int main(){
 	body.push_back(Point(200,200));
 	body.push_back(Point(10,200));
 	Shape kotak(body, Color(255,255,255));
-	kotak.draw();
+	//kotak.draw();
 	
 	/*SHAPECLIP*/
 	vector<Point> body2;
@@ -81,10 +81,10 @@ int main(){
 	//clip.draw();
 	
 	//Vector of Vector of Bangunan
-	vector<Shape> vec_bangunan = readBangunanAndJalan("dataBangunan.txt"); 
+	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
 
 	//Vector of Pohon
-	//vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
+	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
 	
 	for(int i = 0; i < vec_bangunan.size(); i++){
 		vec_bangunan[i].draw();
