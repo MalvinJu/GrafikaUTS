@@ -156,7 +156,6 @@ void LineDrawer::plotVerticalLine (Point P1, Point P2, Color C) {
 }
 
 void LineDrawer::drawBresenhamLine (Point P1, Point P2, Color C) {
-
 	bool accept = false;
 	double x0,y0,x1,y1;
 	x0 = P1.getX(); y0 = P1.getY();
@@ -225,17 +224,13 @@ void LineDrawer::drawBresenhamLine (Point P1, Point P2, Color C) {
 }
 
 void LineDrawer::drawPolyline (vector<Point> P, Color C) {
-	
 	for (int i = 0;i < P.size()-1;i++) {
-		
 			drawBresenhamLine(P[i], P[i+1], C);
 			
 	}
 }
 
 void LineDrawer::drawPolygon (vector<Point> P, Color C) {
-	
-
 	if(P.size() <= 0)
 		return;
 	//P.push_back(P[0]);

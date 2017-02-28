@@ -96,7 +96,7 @@ Shape::Shape(vector<Point>& starting_edge, Color C ){
 	Fill = Color(0,0,0);
 
 	center = calculate_center(starting_edge);
-	floodfill_seed = getFloodFillSeed(edges);
+	//floodfill_seed = getFloodFillSeed(edges);
 }
 
 Shape::~Shape(){
@@ -151,13 +151,13 @@ void Shape::Rotate(int theta){
 
 void Shape::erase(){
 	linedrawer.drawPolygon(edges,Border );
-	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
+	//linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
 	linedrawer.drawPolygon(edges,Color(0,0,0) );
 }
 
 void Shape::draw(){
 	linedrawer.drawPolygon(edges,Border);
-	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
+	//linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
 }
 
 //set floodfill color

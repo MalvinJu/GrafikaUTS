@@ -5,7 +5,6 @@
 #include <iostream>
 #include "shape.h"
 #include "Point.h"
-#include "Color.h"
 
 using namespace std;
 
@@ -14,32 +13,38 @@ vector<Shape> readBangunanAndJalan(string path){
 	ifstream infile;
 	string sline;
 	infile.open(path); // open file bangunan
-	vector<Shape> VP; //Vector of vector of points
-	vector<Point> vec_temp;
+	vector<Shape> VP; //Vector of shapes
+	vector<Point> vec_temp; //Vector of points
+	
 	if (!infile.good()){
 		cout << "File not found";
 	} else {
 		while(!infile.eof()){
 	        getline(infile, sline); // save satu baris ke sline
-	        if((sline.length()<=2) && (pertama != 0)){
+	        if (infile.eof()){
+				break;
+			}
+	        if((sline.length()<=4) && (pertama != 0)){
 				Shape tempShape(vec_temp, Color(255,255,255));
 				VP.push_back(tempShape);
 				vec_temp.clear();
 			} else {
-				pertama += 1;
-				stringstream  lineStream(sline);
-				int x;
-				int y;
-				// Read an integer at a time from the line
-				lineStream >> x;
-				lineStream >> y;
-				Point temp(x,y);
-				vec_temp.push_back(temp);
-				//cout<<"X:"<<x<<" | ";
-				//cout<<"Y:"<<y<<endl;
+				if (pertama == 0){
+					pertama = 1;
+				} else {
+					stringstream lineStream(sline);
+					// Read an integer at a time from the line
+					int x;
+					int y;
+					lineStream >> x;
+					lineStream >> y;
+					Point temp(x,y);
+					vec_temp.push_back(temp);
+				}
 			}
 		}
 	}
+	//elemen terakhir
 	Shape tempShape(vec_temp, Color(255,255,255));
 	VP.push_back(tempShape);
 	
