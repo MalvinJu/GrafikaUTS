@@ -24,7 +24,8 @@ vector<Shape> readBangunanAndJalan(string path){
 	        if (infile.eof()){
 				break;
 			}
-	        if((sline.length()<=4) && (pertama != 0)){
+	        if((sline.length()<=3) && (pertama != 0)){
+				//cout << sline << endl;
 				Shape tempShape(vec_temp, Color(255,255,255));
 				VP.push_back(tempShape);
 				vec_temp.clear();
@@ -55,7 +56,8 @@ vector<Shape> readBangunanAndJalan(string path){
 vector<Point> readPohon(string path){
 	ifstream infile;
 	string sline;
-	infile.open(path); // open file bangunan
+	infile.open("DataGambar/dataJalan.txt"); // open file bangunan
+	//infile.open(path); // open file bangunan
 	vector<Point> VP; //Vector of vector of points
 	if (!infile.good()){
 		cout << "File not found";
@@ -69,33 +71,10 @@ vector<Point> readPohon(string path){
 			lineStream >> x;
 			lineStream >> y;
 			Point temp(x,y);
-			VP.push_back(temp);
-			//cout<<"X:"<<x<<" | ";
-			//cout<<"Y:"<<y<<endl;			
+			VP.push_back(temp);		
 		}
 	}
 	infile.close(); // close file
 	return VP;
 	
 }
-
-/*
-int main() {
-	vector<Shape> VP;
-	VP = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
-	for(int i=0; i< VP.size();i++){
-		for(int j=0; i< VP.size();j++){		
-		cout<<" X "<<VP[i].edges[j].getX()<<" ";
-		cout<<" Y "<<VP[i].edges[j].getY()<<endl;
-		}
-	}
-
-	vector<Point> Pohon;
-	Pohon = readPohon("DataGambar/dataPohon.txt");
-	/*for(int i=0; i< Pohon.size();i++){
-		cout<<" X "<<Pohon[i].getX()<<" ";
-		cout<<" Y "<<Pohon[i].getY()<<endl;
-	}
-	
-} */
-

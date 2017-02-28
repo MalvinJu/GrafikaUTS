@@ -54,9 +54,23 @@ char getch(void)
 }
 //=============================================
 
+
+//VARIABEL GLOBAL
 Screen screen;
 LineDrawer linedrawer;
 LineDrawer linedrawer2;
+vector<Shape> vektorShapePohon;
+
+
+/*MEMBUAT POHON*/
+void makeTree(Point P, double zoomScale){
+	vector<Point> tree;
+	tree.push_back(P);
+	tree.push_back(Point(P.getX() + (5 * zoomScale), P.getY() + (5 * zoomScale)));
+	tree.push_back(Point(P.getX() - (5 * zoomScale), P.getY() + (5 * zoomScale)));
+	Shape pohon(tree, Color(50,255,50));
+	vektorShapePohon.push_back(pohon);	
+}
 
 //MAIN=========================================
 int main(){
@@ -82,12 +96,31 @@ int main(){
 	
 	//Vector of Vector of Bangunan
 	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
+	
+	//Vector of Shape of Jalan
+	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt"); 
 
-	//Vector of Pohon
+	//Vector of Point of Pohon
 	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
 	
+	//Gambar Bangunan
 	for(int i = 0; i < vec_bangunan.size(); i++){
 		vec_bangunan[i].draw();
+	}
+	
+	//Gambar Jalan
+	for(int i = 0; i < vec_jalan.size(); i++){
+		vec_jalan[i].draw();
+	}
+	
+	//Buat Vektor Shape Pohon
+	for(int i = 0; i < Pohon.size(); i++){
+		makeTree(Pohon[i], 1);		
+	}
+	
+	//Gambar Pohon
+	for(int i=0; i < vektorShapePohon.size(); i++){
+		vektorShapePohon[i].draw();
 	}
 	
 	/*GERAKAN KOTAK*/
