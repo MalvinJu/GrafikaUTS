@@ -17,7 +17,7 @@ Screen::Screen(){
 	int buffersize = vinfo.yres_virtual * finfo.line_length;
 	fbp = (char *) mmap(0, buffersize, PROT_READ | PROT_WRITE, MAP_SHARED, fb_fd, (off_t)0);
 
-	
+
 
 }
 
@@ -33,27 +33,37 @@ Color Screen::getColor(int r, int c){
 	return Color(red,green,blue);
 }
 
-void Screen::setColor(int r, int c, int red, int green, int blue){
+void Screen::setColor(int r, int c, int, pixelSize, int red, int green, int blue){
 	if(r<0 || r > getHeight() || c < 0 || c >getWidth()) {
 		return;
 	}
 	else {
-		long int location = (c+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (r+vinfo.yoffset) * finfo.line_length;
-		*(fbp + location) = blue;  
-		*(fbp + location +1) = green;
-		*(fbp + location +2) = red;
-		*(fbp + location +3) = 0;
+		for (i = c; i < (c+pixelSize); i++) {
+            for (j = r; j < (r+pixelSize); j++) {
+                int location = (i+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (j+vinfo.yoffset) * finfo.line_length;
+                *(fbp + location) = blue;
+                *(fbp + location +1) = green;
+                *(fbp + location +2) = red;
+                *(fbp + location +3) = 0;
+            }
+        }
 	}
 }
 
-void Screen::setColor(int r, int c, Color color){
+void Screen::setColor(int r, int c, int pixelSize, Color color){
 	if(r<0 || r > getHeight() || c < 0 || c >getWidth())
 		return;
-	int location = (c+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (r+vinfo.yoffset) * finfo.line_length;
-	*(fbp + location) = color.getBlue();  
-	*(fbp + location +1) = color.getGreen();
-	*(fbp + location +2) = color.getRed();
-	*(fbp + location +3) = 0;
+    else {
+        for (i = c; i < (c+pixelSize); i++) {
+            for (j = r; j < (r+pixelSize); j++) {
+                int location = (i+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (j+vinfo.yoffset) * finfo.line_length;
+                *(fbp + location) = color.getBlue();
+                *(fbp + location +1) = color.getGreen();
+                *(fbp + location +2) = color.getRed();
+                *(fbp + location +3) = 0;
+            }
+        }
+    }
 }
 
 int Screen::getWidth(){
