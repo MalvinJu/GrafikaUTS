@@ -33,7 +33,7 @@ Color Screen::getColor(int r, int c){
 	return Color(red,green,blue);
 }
 
-void Screen::setColor(int r, int c, int, pixelSize, int red, int green, int blue){
+void Screen::setColor(int r, int c, int pixelSize, int red, int green, int blue){
 	if(r<0 || r > getHeight() || c < 0 || c >getWidth()) {
 		return;
 	}

@@ -67,7 +67,7 @@ void LineDrawer::plotSlopPositiveLine (Point P1, Point P2, Color C) {
 		p = 2*dY - dX;
 
 		for (x=P1.getX(); x<=P2.getX(); x++) {
-			screen.setColor(j, x, C);
+			screen.setColor(j, x, 1, C);
 			if (p >= 0) {
 				p += 2* (dY - dX);
 				i++;
@@ -83,7 +83,7 @@ void LineDrawer::plotSlopPositiveLine (Point P1, Point P2, Color C) {
 		p = 2*dX - dY;
 
 		for (y=P1.getY(); y<=P2.getY(); y++) {
-			screen.setColor(y, i, C);
+			screen.setColor(y, i, 1, C);
 			if (p >= 0) {
 				p += 2* (dX - dY);
 				i++;
@@ -111,7 +111,7 @@ void LineDrawer::plotSlopNegativeLine (Point P1, Point P2, Color C) {
 		p = 2*dY - dX;		
 
 		for (x=P1.getX(); x<=P2.getX(); x++) {
-			screen.setColor(j, x, C);
+			screen.setColor(j, x, 1, C);
 			if (p >= 0) {
 				p += 2* (dY - dX);
 				i++;
@@ -129,7 +129,7 @@ void LineDrawer::plotSlopNegativeLine (Point P1, Point P2, Color C) {
 		j = P2.getY();
 
 		for (y=P2.getY(); y<=P1.getY(); y++) {
-			screen.setColor(y, i, C);
+			screen.setColor(y, i, 1, C);
 			if (p >= 0) {
 				p += 2* (dX - dY);
 				i--;
@@ -151,7 +151,7 @@ void LineDrawer::plotVerticalLine (Point P1, Point P2, Color C) {
 	}
 	
 	for(j = P1.getY() ; j <= P2.getY(); j++) {
-		screen.setColor(j, P1.getX(), C);
+		screen.setColor(j, P1.getX(), 1, C);
 	}
 }
 
@@ -249,26 +249,26 @@ void LineDrawer::plot4pixel (Point P, int p, int q, Color C) {
 
 	//screen.setColor(P.getY()+q, P.getX()+p, C);
     //screen.setColor(P.getY()+q, P.getX()-p, C);
-    screen.setColor(P.getY()-q, P.getX()+p, C);
-    screen.setColor(P.getY()-q, P.getX()-p, C);
+    screen.setColor(P.getY()-q, P.getX()+p, 1, C);
+    screen.setColor(P.getY()-q, P.getX()-p, 1, C);
 
     //screen.setColor(P.getY()+p, P.getX()+q, C);
     //screen.setColor(P.getY()+p, P.getX()-q, C);
-    screen.setColor(P.getY()-p, P.getX()+q, C);
-    screen.setColor(P.getY()-p, P.getX()-q, C);
+    screen.setColor(P.getY()-p, P.getX()+q, 1, C);
+    screen.setColor(P.getY()-p, P.getX()-q, 1, C);
 
 }
 
 void LineDrawer::plot8pixel (Point P, int p, int q, Color C) {
-	screen.setColor(P.getY()+q, P.getX()+p, C);
-    screen.setColor(P.getY()+q, P.getX()-p, C);
-    screen.setColor(P.getY()-q, P.getX()+p, C);
-    screen.setColor(P.getY()-q, P.getX()-p, C);
+	screen.setColor(P.getY()+q, P.getX()+p, 1, C);
+    screen.setColor(P.getY()+q, P.getX()-p, 1, C);
+    screen.setColor(P.getY()-q, P.getX()+p, 1, C);
+    screen.setColor(P.getY()-q, P.getX()-p, 1, C);
 
-    screen.setColor(P.getY()+p, P.getX()+q, C);
-    screen.setColor(P.getY()+p, P.getX()-q, C);
-    screen.setColor(P.getY()-p, P.getX()+q, C);
-    screen.setColor(P.getY()-p, P.getX()-q, C);
+    screen.setColor(P.getY()+p, P.getX()+q, 1, C);
+    screen.setColor(P.getY()+p, P.getX()-q, 1, C);
+    screen.setColor(P.getY()-p, P.getX()+q, 1, C);
+    screen.setColor(P.getY()-p, P.getX()-q, 1, C);
 }
 
 void LineDrawer::drawCircle (int radius, Point P, Color C) {
@@ -332,7 +332,7 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 		x = P.getX();
 		y = P.getY();
 		if ( !((x>xr || x<xl) || (y>yr || y<yl)) && !cBorder.isSame(screen.getColor(y, x)) && !cNew.isSame(screen.getColor(y, x)) ) {
-			screen.setColor(y, x, cNew);
+			screen.setColor(y, x, 1, cNew);
 			q.push(Point(x+1,y));
 			q.push(Point(x-1,y));
 			q.push(Point(x,y+1));
