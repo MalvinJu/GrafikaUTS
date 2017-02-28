@@ -4,6 +4,7 @@
 #include "LineDrawer.h"
 #include "shape.h"
 #include "Shapeclip.h"
+#include "readfile.cpp"
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -68,18 +69,33 @@ int main(){
 	body.push_back(Point(200,200));
 	body.push_back(Point(10,200));
 	Shape kotak(body, Color(255,255,255));
-	kotak.draw();
+	//kotak.draw();
 	
-	//SHAPECLIP
+	/*SHAPECLIP*/
 	vector<Point> body2;
 	body2.push_back(Point(510,510));
 	body2.push_back(Point(700,510));
 	body2.push_back(Point(700,700));
 	body2.push_back(Point(510,700));
 	Shapeclip clip(body2, Color(255,255,255));
-	clip.draw();
+	//clip.draw();
 	
+	//Vector of Vector of Bangunan
+	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
 	
+	//Vector of Pohon
+	//vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
+	cout << vec_bangunan.size();
+	
+	for(int i = 0; i < vec_bangunan.size(); i++){
+		cout<< "AKWOKAWOKAW" << endl;
+		cout<<" X "<<vec_bangunan[i].center.getX()<<" ";
+		cout<<" Y "<<vec_bangunan[i].center.getY()<<endl;
+		
+	}
+	
+	/*GERAKAN KOTAK*/
+	/*
     while(1){
         int c = getch();
 		int n;
@@ -108,9 +124,9 @@ int main(){
 				cout << "- was pressed \n";
 				break;
 			default:
-				cout << c;
 				break;
 		}
 	}
+	* */
 	return 0;
 }
