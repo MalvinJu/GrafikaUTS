@@ -4,6 +4,7 @@
 #include "LineDrawer.h"
 #include "shape.h"
 #include "Shapeclip.h"
+#include "readfile.cpp"
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,98 +24,6 @@ using namespace std;
 
 //KEYPRESS HANDLER==============================
 static struct termios old, news;
-
-vector<Shape> readBangunanAndJalan(string path){
-	int pertama = 0;
-	ifstream infile;
-	string sline;
-	infile.open(path); // open file bangunan
-	vector<Shape> VP; //Vector of shapes
-	vector<Point> vec_temp; //Vector of points
-	
-	if (!infile.good()){
-		cout << "File not found";
-	} else {
-		while(!infile.eof()){
-	        getline(infile, sline); // save satu baris ke sline
-	        if (infile.eof()){
-				break;
-			}
-	        if((sline.length()<=4) && (pertama != 0)){
-				Shape tempShape(vec_temp, Color(255,255,255));
-				VP.push_back(tempShape);
-				vec_temp.clear();
-			} else {
-				if (pertama == 0){
-					pertama = 1;
-				} else {
-					stringstream lineStream(sline);
-					// Read an integer at a time from the line
-					int x;
-					int y;
-					lineStream >> x;
-					lineStream >> y;
-					Point temp(x,y);
-					vec_temp.push_back(temp);
-				}
-			}
-		}
-	}
-	//elemen terakhir
-	Shape tempShape(vec_temp, Color(255,255,255));
-	VP.push_back(tempShape);
-	
-	infile.close(); // close file
-	return VP;
-}
-
-vector<Shapeclip> readBangunanAndJalanClip(string path){
-	int pertama = 0;
-	ifstream infile;
-	string sline;
-
-	infile.open(path); // open file bangunan
-	vector<Shapeclip> VP; //Vector of vector of points
-	vector<Point> vec_temp;
-	
-	
-	
-	
-	if (!infile.good()){
-		cout << "File not found";
-	} else {
-		while(!infile.eof()){
-	        getline(infile, sline); // save satu baris ke sline
-	        if (infile.eof()){
-				break;
-			}
-	        if((sline.length()<=4) && (pertama != 0)){
-				Shapeclip tempShape(vec_temp, Color(255,255,255));
-				VP.push_back(tempShape);
-				vec_temp.clear();
-			} else {
-				if (pertama == 0){
-					pertama = 1;
-				} else {
-					stringstream lineStream(sline);
-					// Read an integer at a time from the line
-					int x;
-					int y;
-					lineStream >> x;
-					lineStream >> y;
-					Point temp(x,y);
-					vec_temp.push_back(temp);
-				}
-			}
-		}
-	}
-	//elemen terakhir
-	Shapeclip tempShape(vec_temp, Color(255,255,255));
-	VP.push_back(tempShape);
-	
-	infile.close(); // close file
-	return VP;
-}
 	
 /*Init Termios*/
 void initTermios(int echo) 
@@ -169,9 +78,9 @@ void makeTree(Point P, double zoomScale){
 
 //MAIN=========================================
 int main(){
-	int isPohonDrawn = 1;
+	int isPohonDrawn = 0;
 	int isBangunanDrawn = 1;
-	int isJalanDrawn = 1;
+	int isJalanDrawn = 0;
 	
 	linedrawer.setView(Point(2,2) , Point(screen.getWidth()/2-20, screen.getHeight()-30));
 	linedrawer2.setView(Point(770,100) , Point(930, 280));
@@ -374,7 +283,7 @@ int main(){
 							vec_bangunan[i].draw();
 						}
 					
-			case '1': 	//Trigger Tampilan Bangunan
+			case 'r': 	//Trigger Tampilan Bangunan
 				if (isBangunanDrawn == 1){
 					isBangunanDrawn = 0;
 					for(int i = 0; i < vec_bangunan.size(); i++){
