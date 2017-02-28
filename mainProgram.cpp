@@ -3,6 +3,7 @@
 #include "Screen.h"
 #include "LineDrawer.h"
 #include "shape.h"
+#include "Shapeclip.h"
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -54,15 +55,10 @@ char getch(void)
 
 Screen screen;
 LineDrawer linedrawer;
-
+LineDrawer linedrawer2;
 
 //MAIN=========================================
 int main(){
-	//drawBackground();
-	/*pthread_t thread;
-    Point *argu = (Point *)malloc(sizeof(*argu));
-	*argu = start;
-    int rc = pthread_create(&thread, NULL, drawKotak, argu);*/
 	linedrawer.setView(Point(2,2) , Point(screen.getWidth()/2-20, screen.getHeight()-30));
 	
 	/* MEMBUAT KOTAK*/
@@ -73,6 +69,15 @@ int main(){
 	body.push_back(Point(10,200));
 	Shape kotak(body, Color(255,255,255));
 	kotak.draw();
+	
+	//SHAPECLIP
+	vector<Point> body2;
+	body2.push_back(Point(510,510));
+	body2.push_back(Point(700,510));
+	body2.push_back(Point(700,700));
+	body2.push_back(Point(510,700));
+	Shapeclip clip(body2, Color(255,255,255));
+	clip.draw();
 	
 	
     while(1){

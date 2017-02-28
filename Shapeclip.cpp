@@ -1,4 +1,4 @@
-#include "shape.h"
+#include "Shapeclip.h"
 
 #define PI  3.14159265
 #define EPS 0.00001
@@ -11,48 +11,47 @@ struct vec{
 	vec(double _x, double _y) : x(_x), y(_y) {}
 };
 
-vec toVec(Point a, Point b){
+vec toVec2(Point a, Point b){
 	return vec(b.getX() - a.getX(), b.getY() - a.getY());
 }
 
-double dot(vec a, vec b){
+double dot2(vec a, vec b){
 	return a.x * b.x + a.y * b.y;
 }
 
-double norm_sq(vec v){
+double norm_sq2(vec v){
 	return v.x * v.x + v.y * v.y;
 }
 
-double angle(Point A, Point O, Point B){
-	vec oa = toVec(O,A), ob = toVec(O,B);
-	return acos(dot(oa,ob) / sqrt(norm_sq(oa) * norm_sq(ob)));
+double angle2(Point A, Point O, Point B){
+	vec oa = toVec2(O,A), ob = toVec2(O,B);
+	return acos(dot2(oa,ob) / sqrt(norm_sq2(oa) * norm_sq2(ob)));
 }
 
-double cross(vec a, vec b){
+double cross2(vec a, vec b){
 	return a.x * b.y - a.y * b.x;
 }
 
-bool ccw(Point P, Point Q, Point R){
-	return cross(toVec(P,Q), toVec(P,R)) > 0;
+bool ccw2(Point P, Point Q, Point R){
+	return cross2(toVec2(P,Q), toVec2(P,R)) > 0;
 }
 
-bool is_inside_polygon(Point P, vector<Point> edges){
+bool is_inside_polygon2(Point P, vector<Point> edges){
 	//Code from Competitive programming 3 page 287
 	
 	double sum = 0;
 	edges.push_back(edges[0]);
 	for(int i=0; i < (int) edges.size()-1; i++){
-		if (ccw(P, edges[i], edges[i+1]))
-			sum+=angle(edges[i], P, edges[i+1]);
+		if (ccw2(P, edges[i], edges[i+1]))
+			sum+=angle2(edges[i], P, edges[i+1]);
 		else
-			sum-=angle(edges[i], P, edges[i+1]);
+			sum-=angle2(edges[i], P, edges[i+1]);
 	}
 	return fabs( fabs(sum) - 2 * PI ) < EPS;
 
 }
 
-
-Point calculate_center( vector<Point>& edge){
+Point calculate_center2( vector<Point>& edge){
 	if(edge.size() <= 0)
 		return Point(0,0);
 	int sumX=0, sumY=0;
@@ -63,7 +62,7 @@ Point calculate_center( vector<Point>& edge){
 	return Point(sumX/edge.size(), sumY/edge.size());
 }
 
-Point getFloodFillSeed( vector<Point>& edge){
+Point getFloodFillSeed2( vector<Point>& edge){
 	int  MaxX = -1,MaxY=-1, MinX=1000000, MinY=1000000;
 	for(int i=0; i<edge.size(); i++){
 		MaxX = max(MaxX,edge[i].getX());
@@ -74,7 +73,7 @@ Point getFloodFillSeed( vector<Point>& edge){
 	int x = rand() % (MaxX - MinX +1) + MinX ;
 	int y = rand() % (MaxY - MinY +1) + MinY ;
 	Point P(x,y);
-	while(is_inside_polygon(P, edge) == false){
+	while(is_inside_polygon2(P, edge) == false){
 		x = rand() % (MaxX - MinX +1) + MinX ;
 	 	y = rand() % (MaxY - MinY +1) + MinY ;
 
@@ -83,28 +82,28 @@ Point getFloodFillSeed( vector<Point>& edge){
 	return P;
 }
 
-Shape::Shape(){
+Shapeclip::Shapeclip(){
 	edges.clear();
 	Border = Color(0,0,0);
 	Fill = Color(0,0,0);	
 }
 
-Shape::Shape(vector<Point>& starting_edge, Color C ){
+Shapeclip::Shapeclip(vector<Point>& starting_edge, Color C ){
 	edges.clear();
 	edges = starting_edge;
 	Border = C;
 	Fill = Color(0,0,0);
 
-	center = calculate_center(starting_edge);
-	floodfill_seed = getFloodFillSeed(edges);
+	center = calculate_center2(starting_edge);
+	floodfill_seed = getFloodFillSeed2(edges);
 }
 
-Shape::~Shape(){
+Shapeclip::~Shapeclip(){
 	erase();
 	edges.clear();
 }
 
-Shape::Shape(const Shape &obj){
+Shapeclip::Shapeclip(const Shapeclip &obj){
 	this->floodfill_seed = obj.floodfill_seed;
 	this->edges = obj.edges;
 	this->center = obj.center;
@@ -112,7 +111,7 @@ Shape::Shape(const Shape &obj){
 	this->Fill = obj.Fill;
 }
 
-Shape& Shape::operator=(const Shape &obj){
+Shapeclip& Shapeclip::operator=(const Shapeclip &obj){
 	this->floodfill_seed = obj.floodfill_seed;
 	this->edges = obj.edges;
 	this->center = obj.center;
@@ -120,7 +119,7 @@ Shape& Shape::operator=(const Shape &obj){
 	this->Fill = obj.Fill;
 	return *this;
 }
-void Shape::moveBy(int deltaX, int deltaY){
+void Shapeclip::moveBy(int deltaX, int deltaY){
 	erase();
 	for(int i=0; i<edges.size(); i++){
 		edges[i].moveBy(deltaX, deltaY);
@@ -130,12 +129,10 @@ void Shape::moveBy(int deltaX, int deltaY){
 	draw();
 }
 
-
-
 //rotate the object by theta degree clockwise
-void Shape::Rotate(int theta){
+void Shapeclip::Rotate(int theta){
 	erase();
-	center = calculate_center(edges);
+	center = calculate_center2(edges);
 	for(int i=0; i<edges.size(); i++){
 		edges[i].moveBy(-center.getX(), -center.getY());
 		edges[i].rotate(theta);
@@ -148,37 +145,35 @@ void Shape::Rotate(int theta){
 	draw();
 }
 
-
-void Shape::erase(){
-	linedrawer.drawPolygon(edges,Border );
-	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
-	linedrawer.drawPolygon(edges,Color(0,0,0) );
+void Shapeclip::erase(){
+	linedrawer2.drawPolygon(edges,Border );
+	linedrawer2.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
+	linedrawer2.drawPolygon(edges,Color(0,0,0) );
 }
-
-void Shape::draw(){
-	linedrawer.drawPolygon(edges,Border);
-	linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
+void Shapeclip::draw(){
+	linedrawer2.drawPolygon(edges,Border);
+	linedrawer2.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
 }
 
 //set floodfill color
-void Shape::setFillColor(Color C){
+void Shapeclip::setFillColor(Color C){
 	erase();
 	Fill = C;
 	draw();
 }
 //set Border Color to color c
-void Shape::setBorderColor(Color c){
+void Shapeclip::setBorderColor(Color c){
 	erase();
 	Border = c;
 	draw();
 }
 
-void Shape::setCenter(Point P){
+void Shapeclip::setCenter(Point P){
 	center = P;
 }
 
 //tes rotate poros
-void Shape::RotatePoros(int theta, Point poros){
+void Shapeclip::RotatePoros(int theta, Point poros){
 	erase();
 	for(int i=0; i<edges.size(); i++){
 		//edges[i].moveBy(-center.getX(), -center.getY());
@@ -193,7 +188,7 @@ void Shape::RotatePoros(int theta, Point poros){
 }
 
 //tes pesawat parabola
-void Shape::PlaneParabola(int theta, Point poros){
+void Shapeclip::PlaneParabola(int theta, Point poros){
 	erase();
 	for(int i=0; i<edges.size(); i++){
 		edges[i].rotatePoros(theta, poros);
@@ -202,7 +197,7 @@ void Shape::PlaneParabola(int theta, Point poros){
 	draw();
 }
 
-void Shape::scale(double x){
+void Shapeclip::scale(double x){
 	for(int i=0; i<edges.size();i++){
 		edges[i].x *=x;
 		edges[i].y *=x;

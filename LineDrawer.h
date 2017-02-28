@@ -63,5 +63,6 @@ private:
 };
 
 extern LineDrawer linedrawer;
+extern LineDrawer linedrawer2;
 
 #endif
