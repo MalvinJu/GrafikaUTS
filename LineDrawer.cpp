@@ -223,6 +223,177 @@ void LineDrawer::drawBresenhamLine (Point P1, Point P2, Color C) {
 	
 }
 
+// Y, Xs
+void getRasterInfoSlopPositiveLine (Point P1, Point P2, vector< vector<int> >& out) {
+	int dX, dY, p;
+	int i, j, x, y;
+
+	dX = abs(P2.getX() - P1.getX());
+	dY = abs(P2.getY() - P1.getY());
+	i = P1.getX();
+	j = P1.getY();
+	
+	if (dX >= dY) {
+		p = 2*dY - dX;
+
+		for (x=P1.getX(); x<=P2.getX(); x++) {
+			out[j].push_back(x);
+			
+			if (p >= 0) {
+				p += 2* (dY - dX);
+				i++;
+				j++;
+			}
+			else {
+				p += 2*dY;
+				i++;
+			}
+		}
+	}
+	else {
+		p = 2*dX - dY;
+
+		for (y=P1.getY(); y<=P2.getY(); y++) {
+			out[y].push_back(i);
+			if (p >= 0) {
+				p += 2* (dX - dY);
+				i++;
+				j++;
+			}
+			else {
+				p += 2*dX;
+				j++;
+			}
+		}
+	}
+}
+
+
+void getRasterInfoSlopNegativeLine (Point P1, Point P2, vector< vector<int> >& out) {
+	int dX, dY, p;
+	int i, j, x, y;
+
+	dX = abs(P2.getX() - P1.getX());
+	dY = abs(P2.getY() - P1.getY());
+
+	if (dX >= dY) {
+		i = P1.getX();
+		j = P1.getY();
+		p = 2*dY - dX;		
+
+		for (x=P1.getX(); x<=P2.getX(); x++) {
+			out[j].push_back(x);
+			if (p >= 0) {
+				p += 2* (dY - dX);
+				i++;
+				j--;
+			}
+			else {
+				p += 2*dY;
+				i++;
+			}
+		}
+	}
+	else {
+		p = 2*dX - dY;
+		i = P2.getX();
+		j = P2.getY();
+
+		for (y=P2.getY(); y<=P1.getY(); y++) {
+			out[y].push_back(i);
+			if (p >= 0) {
+				p += 2* (dX - dY);
+				i--;
+				j++;
+			}
+			else {
+				p += 2*dX;
+				j++;
+			}
+		}
+	}
+}
+
+void getRasterInfoVerticalLine (Point P1, Point P2, vector< vector<int> >& out) {
+	int j;
+	
+	if (P2.getY() < P1.getY()) {
+		P1.swapPoint(&P2);	
+	}
+	
+	for(j = P1.getY() ; j <= P2.getY(); j++) {
+		out[j].push_back(P1.getX());
+	}
+}
+
+void LineDrawer::getRasterInfoBresenhamLine (Point P1, Point P2, vector< vector<int> >& out) {
+	bool accept = false;
+	double x0,y0,x1,y1;
+	x0 = P1.getX(); y0 = P1.getY();
+	x1 = P2.getX(); y1 = P2.getY();
+	int outcode1 = getcode(x0,y0);
+	int outcode2 = getcode(x1,y1);
+
+	while(1){
+		if(!(outcode1|outcode2)){
+			accept = true;
+			break;
+		}
+
+		else if(outcode2 & outcode1){
+			break;
+		}
+
+		else{
+			double x,y;
+			int outcode = outcode1 ? outcode1 : outcode2;
+
+			if (outcode & TOP) {           // point is above the clip rectangle
+				x = x0 + (x1 - x0) * (yr - y0) / (y1 - y0);
+				y = yr;
+			} else if (outcode & BOTTOM) { // point is below the clip rectangle
+				x = x0 + (x1 - x0) * (yl - y0) / (y1 - y0);
+				y = yl;
+			} else if (outcode & RIGHT) {  // point is to the right of clip rectangle
+				y = y0 + (y1 - y0) * (xr - x0) / (x1 - x0);
+				x = xr;
+			} else if (outcode & LEFT) {   // point is to the left of clip rectangle
+				y = y0 + (y1 - y0) * (xl - x0) / (x1 - x0);
+				x = xl;
+			}
+
+			if(outcode == outcode1){
+				x0 = x, y0 = y;
+				outcode1 = getcode(x,y);
+			}
+			else if(outcode == outcode2){
+				x1 = x, y1 = y;
+				outcode2 = getcode(x,y);
+			}
+		}
+
+
+	}
+	if(accept){
+		P1 = Point(x0,y0),P2=Point(x1,y1);
+		if (P1.getX() > P2.getX()) {
+			P1.swapPoint(&P2); 
+		}
+
+		if ((P2.getX() >= P1.getX() && P1.getY() > P2.getY())) {
+			getRasterInfoSlopNegativeLine(P1,P2,out);
+		}
+		else if (P1.getX() == P2.getX()) {
+			getRasterInfoVerticalLine(P1,P2,out);
+		}
+		else {
+			getRasterInfoSlopPositiveLine(P1,P2,out);
+		}	
+	}
+
+	
+}
+
 void LineDrawer::drawPolyline (vector<Point> P, Color C) {
 	for (int i = 0;i < P.size()-1;i++) {
 			drawBresenhamLine(P[i], P[i+1], C);
@@ -348,6 +519,13 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 		MinX = min(MinX,edges[i].getX());
 		MinY = min(MinY,edges[i].getY());
 	}
+	vector< vector<int> > borders ( MaxY+1, vector<int>(0) );
+	for( int i = 0, k = i + 1; i < edges.size(); ++ i, ++k ){
+		if( k == edges.size() ) k = 0;
+		getRasterInfoBresenhamLine(edges[i], edges[k], borders);
+	}
+	
+	for( auto& v:borders) sort( v.begin(), v.end() );
 	
 	MinY = max(MinY, yl);
 	MaxY = min(MaxY, yr);
@@ -355,11 +533,18 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	MinX = max(MinX, xl);
 	
 	for( int y = MinY; y < MaxY; ++ y ){
-		for( int x = MinX; x < MaxX; ++ x ){
-			if( is_inside_polygon( Point(x,y) ,edges) ){
-				screen.setColor(y, x, 1, color);
+		bool filling = false;
+		int i = 0;
+		int x = MinX;
+		for( int i = 0; i < borders[y].size() && x < MaxX; ++ i ){
+			while( borders[y][i] != x ){
+				if( filling )
+					screen.setColor(y, x, 1, color);
+				++x;
 			}
+			filling = !filling;
 		}
+		
 	}
 	
 	// y, (pair of x)

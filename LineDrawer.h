@@ -5,6 +5,7 @@
 #include "Screen.h"
 #include "VectorOperation.h"
 #include <vector>
+#include <algorithm>
 using namespace std;
 
 
@@ -58,8 +59,7 @@ private:
 	void plotVerticalLine (Point P1, Point P2, Color C);
 	void plot4pixel (Point P, int p, int q, Color C);
 	void plot8pixel (Point P, int p, int q, Color C);
-
-
+	void getRasterInfoBresenhamLine (Point P1, Point P2, vector< vector<int> >& out);
 	
 
 };
