@@ -22,7 +22,7 @@ using namespace std;
 static struct termios old, news;
 
 /*Init Termios*/
-void initTermios(int echo) 
+void initTermios(int echo)
 {
   tcgetattr(0, &old); /* grab old terminal i/o settings */
   news = old; /* make new settings same as old settings */
@@ -32,13 +32,13 @@ void initTermios(int echo)
 }
 
 /* Restore old terminal i/o settings */
-void resetTermios(void) 
+void resetTermios(void)
 {
   tcsetattr(0, TCSANOW, &old);
 }
 
 /* Read 1 character - echo defines echo mode */
-char getch_(int echo) 
+char getch_(int echo)
 {
   char ch;
   initTermios(echo);
@@ -48,7 +48,7 @@ char getch_(int echo)
 }
 
 /* Read 1 character without echo */
-char getch(void) 
+char getch(void)
 {
   return getch_(0);
 }
@@ -88,6 +88,59 @@ void make16Segi(Point P, double scale) {
 	printf("segi");
 }
 
+void makeSatelite(Point P, double scale) {
+  std::vector<Point> satelite;
+  satelite.push_back(P);
+  satelite.push_back(Point(P.getX() + 100, P.getY()));
+  satelite.push_back(Point(P.getX() + 125, P.getY() + 35));
+  satelite.push_back(Point(P.getX() + 175, P.getY() + 35));
+  satelite.push_back(Point(P.getX() + 190, P.getY() + 15));
+  satelite.push_back(Point(P.getX() + 210, P.getY()));
+  satelite.push_back(Point(P.getX() + 235, P.getY()));
+  satelite.push_back(Point(P.getX() + 255, P.getY() + 15));
+  satelite.push_back(Point(P.getX() + 270, P.getY() + 35));
+  satelite.push_back(Point(P.getX() + 320, P.getY() + 35));
+  satelite.push_back(Point(P.getX() + 345, P.getY()));
+  satelite.push_back(Point(P.getX() + 445, P.getY()));
+  satelite.push_back(Point(P.getX() + 445, P.getY() + 85));
+  satelite.push_back(Point(P.getX() + 345, P.getY() + 85));
+  satelite.push_back(Point(P.getX() + 320, P.getY() + 50));
+  satelite.push_back(Point(P.getX() + 270, P.getY() + 50));
+  satelite.push_back(Point(P.getX() + 255, P.getY() + 70));
+  satelite.push_back(Point(P.getX() + 235, P.getY() + 85));
+  satelite.push_back(Point(P.getX() + 210, P.getY() + 85));
+  satelite.push_back(Point(P.getX() + 190, P.getY() + 70));
+  satelite.push_back(Point(P.getX() + 175, P.getY() + 50));
+  satelite.push_back(Point(P.getX() + 125, P.getY() + 50));
+  satelite.push_back(Point(P.getX() + 100, P.getY() + 85));
+  satelite.push_back(Point(P.getX(), P.getY() + 85));
+  Shape sateliteShape(satelite, Color(46,75,221));
+  sateliteShape.scale(scale);
+  vektorShapePohon.push_back(sateliteShape);
+  printf("SATELITE");
+}
+
+void makeAsteroid(Point P, double scale) {
+  std::vector<Point> asteroid;
+  asteroid.push_back(P);
+  asteroid.push_back(Point(P.getX() + 30, P.getY()));
+  asteroid.push_back(Point(P.getX() + 40, P.getY() + 40));
+  asteroid.push_back(Point(P.getX() + 55, P.getY() + 30));
+  asteroid.push_back(Point(P.getX() + 70, P.getY() + 26));
+  asteroid.push_back(Point(P.getX() + 85, P.getY() + 40));
+  asteroid.push_back(Point(P.getX() + 87, P.getY() + 60));
+  asteroid.push_back(Point(P.getX() + 80, P.getY() + 90));
+  asteroid.push_back(Point(P.getX() + 42, P.getY() + 120));
+  asteroid.push_back(Point(P.getX() + 28, P.getY() + 118));
+  asteroid.push_back(Point(P.getX() + 5, P.getY() + 92));
+  asteroid.push_back(Point(P.getX() - 3, P.getY() + 115));
+  asteroid.push_back(Point(P.getX() - 10, P.getY() + 55));
+  Shape asteroidShape(asteroid, Color(114, 63, 4));
+  asteroidShape.scale(scale);
+  vektorShapePohon.push_back(asteroidShape);
+  printf("ASTEROID");
+}
+
 /*MEMBUAT POHON*/
 void makeTree(Point P, double zoomScale){
 	vector<Point> tree;
@@ -95,7 +148,7 @@ void makeTree(Point P, double zoomScale){
 	tree.push_back(Point(P.getX() + (5 * zoomScale), P.getY() + (5 * zoomScale)));
 	tree.push_back(Point(P.getX() - (5 * zoomScale), P.getY() + (5 * zoomScale)));
 	Shape pohon(tree, Color(50,255,50));
-	vektorShapePohon.push_back(pohon);	
+	vektorShapePohon.push_back(pohon);
 }
 
 
@@ -107,11 +160,11 @@ int main(){
 	double zoomScale;
 	int deltaX;
 	int deltaY;
-	
+
 	// BAGIAN LAYAR CLIPPING
 	linedrawer.setView(Point(0,0) , Point(screen.getWidth()/2, screen.getHeight()-1));
 	linedrawer2.setView(Point(screen.getWidth()/2, 0) , Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
-	
+
 	/* BAGIAN KANAN YANG KECIL */
 	vector<Point> body;
 	body.push_back(Point(screen.getWidth()/2, 0));
@@ -120,10 +173,10 @@ int main(){
 	body.push_back(Point(screen.getWidth()/2, screen.getHeight()/2));
 	Shapeclip kotak(body, Color(255,255,255));
 	kotak.draw();
-	
+
 	Point centerKotak((screen.getWidth()/2 + screen.getWidth()/8), (screen.getHeight()/4));
-	
-	vector<Shapeclip> vec_bangunanClip = readBangunanAndJalanClip("DataGambar/dataBangunan.txt"); 
+
+	vector<Shapeclip> vec_bangunanClip = readBangunanAndJalanClip("DataGambar/dataBangunan.txt");
 	int titikAwalX = screen.getWidth()/2;
 	int titikAwalY = 0;
 	int scalefactor = 2;
@@ -133,22 +186,22 @@ int main(){
 		vec_bangunanClip[i].moveBy(screen.getWidth()/2, 0);
 		vec_bangunanClip[i].draw();
 	}
-	
-	
-	
+
+
+
 	/*BAGIAN KIRI YANG BESAR*/
 	//Vector of Vector of Bangunan
-	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt"); 
-	
+	vector<Shape> vec_bangunan = readBangunanAndJalan("DataGambar/dataBangunan.txt");
+
 	//Vector of Shape of Jalan
-	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt"); 
+	vector<Shape> vec_jalan = readBangunanAndJalan("DataGambar/dataJalan.txt");
 
 	//Vector of Point of Pohon
 	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
-	
+
 	printf("tes1\n");
 	//draw planet
-	
+
 	make16Segi(Point(400, 215), 1);
 	make16Segi(Point(500, 215), 0.5);
 	make16Segi(Point(600, 415), 0.4);
@@ -159,11 +212,13 @@ int main(){
 	make16Segi(Point(100, 115), 0.25);
 	make16Segi(Point(200, 315), 0.35);
 	make16Segi(Point(500, 515), 0.23);
+  makeSatelite(Point(200,400), 0.3);
+  makeAsteroid(Point(400,200), 0.5);
 
 	printf("tes2\n");
 	//Buat Vektor Shape Pohon
 	for(int i = 0; i < Pohon.size(); i++){
-		makeTree(Pohon[i], 1);		
+		makeTree(Pohon[i], 1);
 	}
 
 
@@ -172,20 +227,20 @@ int main(){
 		vec_bangunan[i].scale(2);
 		vec_bangunan[i].draw();
 	}
-	
+
 	for(int i = 0; i < vektorShapePohon.size(); i++){
 		vektorShapePohon[i].scale(2);
 		vektorShapePohon[i].setFillColor(Color(0,255,0));
 		vektorShapePohon[i].draw();
 	}
-	
+
 	for(int i = 0; i < vec_jalan.size(); i++){
 		vec_jalan[i].scale(2);
 		vec_jalan[i].setFillColor(Color(255,255,0));
 		vec_jalan[i].draw();
 	}
-	
-	
+
+
 	/*GERAKAN*/
     while(1){
         int c = getch();
@@ -198,19 +253,19 @@ int main(){
 						vec_bangunan[i].moveBy(0, -5);
 						if (isBangunanDrawn == 1) {
 							vec_bangunan[i].draw();
-						}	
+						}
 					}
 					for(int i=0; i < vektorShapePohon.size(); i++){
 						vektorShapePohon[i].moveBy(0, -5);
 						if (isPohonDrawn == 1) {
 							vektorShapePohon[i].draw();
-						}	
+						}
 					}
 					for(int i = 0; i < vec_jalan.size(); i++){
 						vec_jalan[i].moveBy(0, -5);
 						if (isJalanDrawn == 1) {
 							vec_jalan[i].draw();
-						}	
+						}
 					}
 					//CLIP
 					kotak.moveBy(0, 5/2);
@@ -226,7 +281,7 @@ int main(){
 						vec_bangunan[i].moveBy(-5, 0);
 						if (isBangunanDrawn == 1) {
 							vec_bangunan[i].draw();
-						}	
+						}
 					}
 					for(int i=0; i < vektorShapePohon.size(); i++){
 						vektorShapePohon[i].moveBy(-5, 0);
@@ -254,7 +309,7 @@ int main(){
 						vec_bangunan[i].moveBy(0, 5);
 						if (isBangunanDrawn == 1) {
 							vec_bangunan[i].draw();
-						}	
+						}
 					}
 					for(int i=0; i < vektorShapePohon.size(); i++){
 						vektorShapePohon[i].moveBy(0, 5);
@@ -283,7 +338,7 @@ int main(){
 						vec_bangunan[i].moveBy(5, 0);
 						if (isBangunanDrawn == 1) {
 							vec_bangunan[i].draw();
-						}	
+						}
 					}
 					for(int i=0; i < vektorShapePohon.size(); i++){
 						vektorShapePohon[i].moveBy(5, 0);
@@ -307,7 +362,7 @@ int main(){
 					break;
 			case 61: 	//Tombol +
 				zoomScale = 0.05;
-				
+
 				kotak.erase();
 				for (int i = 0; i < kotak.edges.size(); i++) {
 					deltaX = kotak.edges[i].x - centerKotak.x;
@@ -318,7 +373,7 @@ int main(){
 					kotak.edges[i].y -= deltaY;
 				}
 				kotak.draw();
-				
+
 				for (int i = 0; i < vec_bangunan.size(); i++){
 					for (int j = 0; j < vec_bangunan[i].edges.size(); j++){
 						vec_bangunan[i].erase();
@@ -330,7 +385,7 @@ int main(){
 						vec_bangunan[i].edges[j].y += deltaY;
 					}
 				}
-				
+
 				for (int i = 0; i < vektorShapePohon.size(); i++){
 					for (int j = 0; j < vektorShapePohon[i].edges.size(); j++){
 						vektorShapePohon[i].erase();
@@ -342,7 +397,7 @@ int main(){
 						vektorShapePohon[i].edges[j].y += deltaY;
 					}
 				}
-				
+
 				for (int i = 0; i < vec_jalan.size(); i++){
 					for (int j = 0; j < vec_jalan[i].edges.size(); j++){
 						vec_jalan[i].erase();
@@ -367,7 +422,7 @@ int main(){
 				break;
 			case 45: 	//Tombol -
 				zoomScale = 0.05;
-				
+
 				kotak.erase();
 				for (int i = 0; i < kotak.edges.size(); i++) {
 					deltaX = kotak.edges[i].x - centerKotak.x;
@@ -378,7 +433,7 @@ int main(){
 					kotak.edges[i].y += deltaY;
 				}
 				kotak.draw();
-				
+
 				for (int i = 0; i < vec_bangunan.size(); i++){
 					for (int j = 0; j < vec_bangunan[i].edges.size(); j++){
 						vec_bangunan[i].erase();
@@ -390,7 +445,7 @@ int main(){
 						vec_bangunan[i].edges[j].y -= deltaY;
 					}
 				}
-				
+
 				for (int i = 0; i < vektorShapePohon.size(); i++){
 					for (int j = 0; j < vektorShapePohon[i].edges.size(); j++){
 						vektorShapePohon[i].erase();
@@ -402,7 +457,7 @@ int main(){
 						vektorShapePohon[i].edges[j].y -= deltaY;
 					}
 				}
-				
+
 				for (int i = 0; i < vec_jalan.size(); i++){
 					for (int j = 0; j < vec_jalan[i].edges.size(); j++){
 						vec_jalan[i].erase();
