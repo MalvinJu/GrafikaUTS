@@ -23,10 +23,28 @@ public	:
 	//c : warna dari bintang
 	stars(int n_angles, Point p_center, int scale, Color c);
 	
+	//destructor
+	~stars();
+	
 	//method untuk menduplikatkan bintang yang sama ke point yang dituju
 	//dest : point pusat bintang yang ingin dituju
-	copyTo(Point dest);
-
+	void copyTo(Point dest);
+	
+	//method untuk menduplikatkan bintang yang sama ke point yang dituju
+	//x : absis pusat bintang yang ingin dituju
+	//y : ordinat pusat bintang yang ingin dituju
+	void copyTo(int x, int y);
+	
+	//method untuk ubah warna garis bintang
+	//r : indeks red warna yang diinginkan
+	//g : indeks green warna yang diinginkan
+	//b : indeks blue warna yang diinginkan
+	void changeColor(int r, int g, int b);
+	
+	//method untuk ubah warna garis bintang
+	//chg : warna yang baru
+	void changeColor(Color chg);
+	
 private	:
 	Point center; //point dari pusat bintang
 	int angles; //banyaknya segi dari bintang
