@@ -327,69 +327,24 @@ void getRasterInfoVerticalLine (Point P1, Point P2, vector< vector<int> >& out) 
 }
 
 void LineDrawer::getRasterInfoBresenhamLine (Point P1, Point P2, vector< vector<int> >& out) {
-	bool accept = false;
 	double x0,y0,x1,y1;
 	x0 = P1.getX(); y0 = P1.getY();
 	x1 = P2.getX(); y1 = P2.getY();
-	int outcode1 = getcode(x0,y0);
-	int outcode2 = getcode(x1,y1);
 
-	while(1){
-		if(!(outcode1|outcode2)){
-			accept = true;
-			break;
-		}
-
-		else if(outcode2 & outcode1){
-			break;
-		}
-
-		else{
-			double x,y;
-			int outcode = outcode1 ? outcode1 : outcode2;
-
-			if (outcode & TOP) {           // point is above the clip rectangle
-				x = x0 + (x1 - x0) * (yr - y0) / (y1 - y0);
-				y = yr;
-			} else if (outcode & BOTTOM) { // point is below the clip rectangle
-				x = x0 + (x1 - x0) * (yl - y0) / (y1 - y0);
-				y = yl;
-			} else if (outcode & RIGHT) {  // point is to the right of clip rectangle
-				y = y0 + (y1 - y0) * (xr - x0) / (x1 - x0);
-				x = xr;
-			} else if (outcode & LEFT) {   // point is to the left of clip rectangle
-				y = y0 + (y1 - y0) * (xl - x0) / (x1 - x0);
-				x = xl;
-			}
-
-			if(outcode == outcode1){
-				x0 = x, y0 = y;
-				outcode1 = getcode(x,y);
-			}
-			else if(outcode == outcode2){
-				x1 = x, y1 = y;
-				outcode2 = getcode(x,y);
-			}
-		}
-
-
+	P1 = Point(x0,y0),P2=Point(x1,y1);
+	if (P1.getX() > P2.getX()) {
+		P1.swapPoint(&P2); 
 	}
-	if(accept){
-		P1 = Point(x0,y0),P2=Point(x1,y1);
-		if (P1.getX() > P2.getX()) {
-			P1.swapPoint(&P2); 
-		}
 
-		if ((P2.getX() >= P1.getX() && P1.getY() > P2.getY())) {
-			getRasterInfoSlopNegativeLine(P1,P2,out);
-		}
-		else if (P1.getX() == P2.getX()) {
-			getRasterInfoVerticalLine(P1,P2,out);
-		}
-		else {
-			getRasterInfoSlopPositiveLine(P1,P2,out);
-		}	
+	if ((P2.getX() >= P1.getX() && P1.getY() > P2.getY())) {
+		getRasterInfoSlopNegativeLine(P1,P2,out);
 	}
+	else if (P1.getX() == P2.getX()) {
+		getRasterInfoVerticalLine(P1,P2,out);
+	}
+	else {
+		getRasterInfoSlopPositiveLine(P1,P2,out);
+	}	
 
 	
 }
@@ -527,17 +482,18 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	
 	for( auto& v:borders) sort( v.begin(), v.end() );
 	
+	/*
 	MinY = max(MinY, yl);
 	MaxY = min(MaxY, yr);
 	MaxX = min(MaxX, xr);
 	MinX = max(MinX, xl);
-	
+	*/
 	for( int y = MinY; y < MaxY; ++ y ){
 		bool filling = false;
 		int i = 0;
 		int x = MinX;
 		for( int i = 0; i < borders[y].size() && x < MaxX; ++ i ){
-			if( i >=1 && (borders[y][i] == borders[y][i-1] || borders[y][i] == borders[y][i-1]+1) ) continue;
+			if( i >=1 && (borders[y][i]-borders[y][i-1] <= 1) ) continue;
 			while( borders[y][i] != x ){
 				if( filling )
 					screen.setColor(y, x, 1, color);
