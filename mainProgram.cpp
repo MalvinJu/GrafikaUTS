@@ -63,6 +63,30 @@ vector<Shape> vektorShapePohon;
 double xpusat = screen.getWidth()/4;
 double ypusat = screen.getHeight()/2;
 
+/* Membuat 16 segi */
+void make16Segi(Point P, double scale) {
+	std::vector<Point> segiEnamBelas;
+	segiEnamBelas.push_back(P);
+	segiEnamBelas.push_back(Point(P.getX() + 75, P.getY() + 5));
+	segiEnamBelas.push_back(Point(P.getX() + 140, P.getY() + 35));
+	segiEnamBelas.push_back(Point(P.getX() + 185, P.getY() + 80));
+	segiEnamBelas.push_back(Point(P.getX() + 210, P.getY() + 150));
+	segiEnamBelas.push_back(Point(P.getX() + 205, P.getY() + 220));
+	segiEnamBelas.push_back(Point(P.getX() + 175, P.getY() + 285));
+	segiEnamBelas.push_back(Point(P.getX() + 125, P.getY() + 325));
+	segiEnamBelas.push_back(Point(P.getX() + 60, P.getY() + 350));
+	segiEnamBelas.push_back(Point(P.getX() + 0, P.getY() + 345));
+	segiEnamBelas.push_back(Point(P.getX() - 70, P.getY() + 320));
+	segiEnamBelas.push_back(Point(P.getX() - 115, P.getY() + 270));
+	segiEnamBelas.push_back(Point(P.getX() - 140, P.getY() + 200));
+	segiEnamBelas.push_back(Point(P.getX() - 135, P.getY() + 135));
+	segiEnamBelas.push_back(Point(P.getX() - 110, P.getY() + 65));
+	segiEnamBelas.push_back(Point(P.getX() - 60, P.getY() + 25));
+	Shape segi16(segiEnamBelas, Color(50, 255, 50));
+	segi16.scale(scale);
+	vektorShapePohon.push_back(segi16);
+	printf("segi");
+}
 
 /*MEMBUAT POHON*/
 void makeTree(Point P, double zoomScale){
@@ -122,11 +146,27 @@ int main(){
 	//Vector of Point of Pohon
 	vector<Point> Pohon = readPohon("DataGambar/dataPohon.txt");
 	
+	printf("tes1\n");
+	//draw planet
+	
+	make16Segi(Point(400, 215), 1);
+	make16Segi(Point(500, 215), 0.5);
+	make16Segi(Point(600, 415), 0.4);
+	make16Segi(Point(700, 715), 0.3);
+	make16Segi(Point(800, 815), 0.2);
+	make16Segi(Point(300, 215), 0.1);
+	make16Segi(Point(200, 215), 0.15);
+	make16Segi(Point(100, 115), 0.25);
+	make16Segi(Point(200, 315), 0.35);
+	make16Segi(Point(500, 515), 0.23);
+
+	printf("tes2\n");
 	//Buat Vektor Shape Pohon
 	for(int i = 0; i < Pohon.size(); i++){
 		makeTree(Pohon[i], 1);		
 	}
-	
+
+
 	//SCALING
 	for(int i = 0; i < vec_bangunan.size(); i++){
 		vec_bangunan[i].scale(2);
