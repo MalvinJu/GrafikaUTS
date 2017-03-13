@@ -104,10 +104,8 @@ int main(){
 	int titikAwalY = 0;
 	int scalefactor = 2;
 	for(int i = 0; i < vec_bangunanClip.size(); i++){
-		for(int j = 0; j < vec_bangunanClip[i].edges.size(); j++){
-			vec_bangunanClip[i].edges[j].x *= 1;
-			vec_bangunanClip[i].edges[j].y *= 1;
-		}
+		vec_bangunanClip[i].Fill = Color(255,0,0);
+		vec_bangunanClip[i].scale(1.0);
 		vec_bangunanClip[i].moveBy(screen.getWidth()/2, 0);
 		vec_bangunanClip[i].draw();
 	}
@@ -131,26 +129,17 @@ int main(){
 	
 	//SCALING
 	for(int i = 0; i < vec_bangunan.size(); i++){
-		for(int j = 0; j < vec_bangunan[i].edges.size(); j++){
-			vec_bangunan[i].edges[j].x *= 2;
-			vec_bangunan[i].edges[j].y *= 2;
-		}
+		vec_bangunan[i].scale(2);
 		vec_bangunan[i].draw();
 	}
 	
 	for(int i = 0; i < vektorShapePohon.size(); i++){
-		for(int j = 0; j < vektorShapePohon[i].edges.size(); j++){
-			vektorShapePohon[i].edges[j].x *= 2;
-			vektorShapePohon[i].edges[j].y *= 2;
-		}
+		vektorShapePohon[i].scale(2);
 		vektorShapePohon[i].draw();
 	}
 	
 	for(int i = 0; i < vec_jalan.size(); i++){
-		for(int j = 0; j < vec_jalan[i].edges.size(); j++){
-			vec_jalan[i].edges[j].x *= 2;
-			vec_jalan[i].edges[j].y *= 2;
-		}
+		vec_jalan[i].scale(2);
 		vec_jalan[i].draw();
 	}
 	

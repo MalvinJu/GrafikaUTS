@@ -338,3 +338,34 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 	
 	
 }
+
+
+void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
+	int  MaxX = -1,MaxY=-1, MinX=1000000, MinY=1000000;
+	for(int i=0; i<edges.size(); i++){
+		MaxX = max(MaxX,edges[i].getX());
+		MaxY = max(MaxY,edges[i].getY());
+		MinX = min(MinX,edges[i].getX());
+		MinY = min(MinY,edges[i].getY());
+	}
+	
+	MinY = max(MinY, yl);
+	MaxY = min(MaxY, yr);
+	MaxX = min(MaxX, xr);
+	MinX = max(MinX, xl);
+	
+	for( int y = MinY; y < MaxY; ++ y ){
+		for( int x = MinX; x < MaxX; ++ x ){
+			if( is_inside_polygon( Point(x,y) ,edges) ){
+				screen.setColor(y, x, 1, color);
+			}
+		}
+	}
+	
+	// y, (pair of x)
+//	vector< vector< int > > memo;
+	
+	
+	
+}
+

@@ -4,6 +4,7 @@
 #include "Point.h"
 #include <vector>
 #include "AbstractShape.h"
+#include "VectorOperation.h"
 #include <cmath>
 #include <algorithm>
 #include <random>
@@ -50,7 +51,7 @@ public:
 	Point center;
 	Color Border;
 	Color Fill;
-
+	int priority;
 };
 
 #endif                                                   

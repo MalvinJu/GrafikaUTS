@@ -3,6 +3,7 @@
 #include "Point.h"
 #include "Color.h"
 #include "Screen.h"
+#include "VectorOperation.h"
 #include <vector>
 using namespace std;
 
@@ -45,6 +46,7 @@ public:
 	void drawHalfCircle (int radius, Point P, Color C);
 	void floodFill4Seed (int x, int y, Color cBorder, Color cNew);
 
+	void rasterFill( vector<Point>& edges, Color color);
 	
 	int xl,yl,xr,yr;
 	

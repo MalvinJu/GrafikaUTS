@@ -4,6 +4,7 @@
 #include "Point.h"
 #include <vector>
 #include "AbstractShape.h"
+#include "VectorOperation.h"
 #include <cmath>
 #include <algorithm>
 #include <random>
