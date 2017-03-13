@@ -135,11 +135,13 @@ int main(){
 	
 	for(int i = 0; i < vektorShapePohon.size(); i++){
 		vektorShapePohon[i].scale(2);
+		vektorShapePohon[i].setFillColor(Color(0,255,0));
 		vektorShapePohon[i].draw();
 	}
 	
 	for(int i = 0; i < vec_jalan.size(); i++){
 		vec_jalan[i].scale(2);
+		vec_jalan[i].setFillColor(Color(255,255,0));
 		vec_jalan[i].draw();
 	}
 	
@@ -223,6 +225,7 @@ int main(){
 					for(int i = 0; i < vec_jalan.size(); i++){
 						vec_jalan[i].moveBy(0, 5);
 						if (isJalanDrawn == 1) {
+							vec_jalan[i].erase();
 							vec_jalan[i].draw();
 						}
 					}

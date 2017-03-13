@@ -15,7 +15,7 @@ Shape::Shape(vector<Point>& starting_edge, Color C ){
 	edges.clear();
 	edges = starting_edge;
 	Border = C;
-	Fill = Color(0,0,0);
+	Fill = Color(25,25,25);
 
 	center = calculate_center(starting_edge);
 	//floodfill_seed = getFloodFillSeed(edges);
@@ -75,10 +75,12 @@ void Shape::erase(){
 	linedrawer.drawPolygon(edges,Border );
 	//linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
 	linedrawer.drawPolygon(edges,Color(0,0,0) );
+	linedrawer.rasterFill(edges, Color(0,0,0) );
 }
 
 void Shape::draw(){
 	linedrawer.drawPolygon(edges,Border);
+	linedrawer.rasterFill(edges, Fill );
 	//linedrawer.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Fill);
 }
 
