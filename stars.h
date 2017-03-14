@@ -1,8 +1,8 @@
-#ifndef __Stars__
-#def __Stars__
+#ifndef __STARS__
+#define __STARS__
 
 #include <iostream>
-#include <stdlib>
+#include <stdlib.h>
 #include "LineDrawer.h"
 #include "Point.h"
 #include <vector>
@@ -50,6 +50,6 @@ private	:
 	int angles; //banyaknya segi dari bintang
 	vector<Point> data; //vector yang berisi Point dari sudut-sudut
 	Color color; //warna dari bintang
-}
+};
 
 #endif

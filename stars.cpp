@@ -3,12 +3,11 @@
 using namespace std;
 
 stars::stars(){
-	center = new Point (0,0);
+	center.setPoint(0,0);
 	angles = 5;
-	data = new vector<Point>;
 	data.reserve(11);
-	color = new Color(255, 255, 255);
-	Point p = new Point();
+	color.setColor(255, 255, 255);
+	Point p;
 	
 	p.setPoint(0, -4);
 	data.push_back(p);
@@ -43,20 +42,18 @@ stars::stars(){
 	p.setPoint(0, -4);
 	data.push_back(p);
 	
-	LineDrawer l = new LineDrawer();
+	LineDrawer l;
 	l.drawPolygon(data, color);
-	free(&l);
-	free(&p);
 }
 
 stars::stars(int n_angles, Point p_center, int scale, Color c){
-	center = new Point(p_center);
-	xcenter = center.getX();
-	ycenter = center.getY();
+	center.setPoint(p_center.getX(), p_center.getY());
+	int xcenter = center.getX();
+	int ycenter = center.getY();
 	angles = n_angles;
-	color = new Color(c.getRed(), c.getGreen(), c.getBlue());
-	data = new vector<Point>;
+	color.setColor(c.getRed(), c.getGreen(), c.getBlue());
 	data.reserve(2 * angles + 1);
+	Point p;
 	
 	if(angles == 3){
 		p.setPoint(0 + xcenter, ((-4) * scale) + ycenter);
@@ -74,7 +71,7 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 		p.setPoint(((-3) * scale) + xcenter, (2 * scale) + ycenter);
 		data.push_back(p);
 		
-		p.setPoint(((-1) * scale) + xcenter, ((-1) * scale) + ycenter));
+		p.setPoint(((-1) * scale) + xcenter, ((-1) * scale) + ycenter);
 		data.push_back(p);
 		
 		p.setPoint(0 + xcenter, ((-4) * scale) + ycenter);
@@ -143,7 +140,7 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 		data.push_back(p);
 	}
 	else if (angles == 6){
-		p.setPoint((0 + xcenter, ((-5) * scale) + ycenter);
+		p.setPoint(0 + xcenter, ((-5) * scale) + ycenter);
 		data.push_back(p);
 		
 		p.setPoint((1 * scale) + xcenter, ((-2) * scale) + ycenter);
@@ -281,41 +278,37 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 		data.push_back(p);
 	}
 	
-	LineDrawer l = new LineDrawer();
+	LineDrawer l;
 	l.drawPolygon(data, color);
-	
-	free(&l);
-	free(&p);
 }
 
 stars::~stars(){
 	free(&data);
 	free(&color);
 	free(&center);
-	angles = NULL;
+	angles = 0;
 }
 
 void stars::copyTo(Point dest){
-	center.setPoint(dest);
+	center.setPoint(dest.getX(), dest.getY());
 	for(int i=0; i<data.size(); ++i){
 		data[i].setPoint(data[i].getX() - center.getX() + dest.getX(), data[i].getY() - center.getY() + dest.getY());
 	}
-	LineDrawer l = new LineDrawer();
+	
+	LineDrawer l;
 	l.drawPolygon(data, color);
-	free(&l);
 }
 
 void stars::copyTo(int x, int y){
-	Point p = new Point(x, y);
+	Point p;
+	p.setPoint(x, y);
 	copyTo(p);
-	free(&p);
 }
 
 void stars::changeColor(int r, int g, int b){
 	color.setColor(r, g, b);
-	LineDrawer l = new LineDrawer();
+	LineDrawer l;
 	l.drawPolygon(data, color);
-	free(&l);
 }
 
 void stars::changeColor(Color chg){
