@@ -509,14 +509,30 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	
 	for( auto& v:borders) sort( v.begin(), v.end());
 	
+	MinY = max(MinY, yl);
+	MaxY = min(MaxY, yr);
+	MaxX = min(MaxX, xr);
+	
 	for( int y = MinY; y < MaxY; ++ y ){
 		bool filling = false;
 		int i = 0;
 		int x = MinX;
-		for( int i = 0; i < borders[y].size() && x < MaxX; ++ i ){
+		
+		if( x < xl ) {
+			for( ; i < borders[y].size() && x < xl; ++ i ){
+				if( i >=1 && (borders[y][i]-borders[y][i-1] <= 1) ) continue;
+				x = borders[y][i];
+				if( x >= xl ) break;
+				filling = !filling;
+			}
+			x = xl;
+		}
+		
+		
+		for( ; i < borders[y].size() && x < MaxX; ++ i ){
 			if( i >=1 && (borders[y][i]-borders[y][i-1] <= 1) ) continue;
-			while( borders[y][i] != x ){
-				if( filling )
+			while( borders[y][i] != x && x < MaxX ){
+				if( filling && x > xl )
 					screen.setColor(y, x, 1, color);
 				++x;
 			}
