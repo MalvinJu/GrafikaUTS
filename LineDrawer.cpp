@@ -27,7 +27,7 @@ void LineDrawer::setView(Point P1, Point P2){
 	P.push_back(Point(xr,yr));
 	P.push_back(Point(xr,yl));
 
-	//drawPolygon(P,Color(255,255,255));
+	drawPolygon(P,Color(255,255,255));
 }
 
 
