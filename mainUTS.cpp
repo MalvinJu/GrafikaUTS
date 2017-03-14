@@ -5,6 +5,7 @@
 #include "shape.h"
 #include "Shapeclip.h"
 #include "readfile.cpp"
+#include "stars.h"
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -59,6 +60,7 @@ typedef struct {
   bool planet = false;
   bool satelite = false;
   bool asteroid = false;
+  bool star = false;
 } Lock;
 
 //VARIABEL GLOBAL
@@ -69,6 +71,9 @@ vector<Shapeclip> vektorPlanet;
 vector<Shapeclip> vektorMatahari;
 vector<Shapeclip> vektorSatelit;
 vector<Shapeclip> vektorAsteroid;
+
+vector<stars> vektorBintang;
+
 double xpusat = screen.getWidth()/2;
 double ypusat = screen.getHeight()/2;
 bool planetDrawn = true;
@@ -217,6 +222,15 @@ void drawMatahari() {
     vektorMatahari[i].draw();
   }
   lock.matahari = false;
+}
+
+void drawStars() {
+  while (lock.star) {}
+  lock.star = true;
+  for(int i = 0; i < vektorBintang.size(); i++){
+    vektorBintang[i].draw();
+  }
+  lock.star = false;
 }
 
 void makePlanets() {
@@ -420,6 +434,9 @@ int main() {
 
   //Asteroid
   makeAsteroids(4);
+
+  stars s1(4, Point(300, 300), 5, Color(255, 255, 255));
+  vektorBintang.push_back(s1);
   
   screen.setColor(1200,500, 1, 0, 255, 0);
 
@@ -431,6 +448,7 @@ int main() {
     if (planetDrawn) drawPlanets();
     if (matahariDrawn) drawMatahari();
     drawSatelites();
+    drawStars();
     if (asteroidDrawn) drawAsteroids();
     usleep(5000);
   }
