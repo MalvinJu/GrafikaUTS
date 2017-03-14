@@ -42,8 +42,9 @@ stars::stars(){
 	p.setPoint(0, -4);
 	data.push_back(p);
 	
-	LineDrawer l;
-	l.drawPolygon(data, color);
+	Shapeclip temp(data, Color(100,100,100));
+	bintang = temp;
+	bintang.setFillColor(Color(255,0,0));
 }
 
 stars::stars(int n_angles, Point p_center, int scale, Color c){
@@ -277,9 +278,9 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 		p.setPoint(0 + xcenter, ((-6) * scale) + ycenter);
 		data.push_back(p);
 	}
-	
-	LineDrawer l;
-	l.drawPolygon(data, color);
+	Shapeclip temp(data, Color(c));
+	bintang = temp;
+	bintang.setFillColor(c);
 }
 
 stars::~stars(){
@@ -290,27 +291,21 @@ stars::~stars(){
 }
 
 void stars::copyTo(Point dest){
-	center.setPoint(dest.getX(), dest.getY());
-	for(int i=0; i<data.size(); ++i){
-		data[i].setPoint(data[i].getX() - center.getX() + dest.getX(), data[i].getY() - center.getY() + dest.getY());
-	}
-	
-	LineDrawer l;
-	l.drawPolygon(data, color);
+	bintang.moveBy(dest.getX(), dest.getY());
 }
 
 void stars::copyTo(int x, int y){
-	Point p;
-	p.setPoint(x, y);
-	copyTo(p);
+	bintang.moveBy(x, y);
 }
 
 void stars::changeColor(int r, int g, int b){
-	color.setColor(r, g, b);
-	LineDrawer l;
-	l.drawPolygon(data, color);
+	bintang.setFillColor(Color(r,g,b));
 }
 
 void stars::changeColor(Color chg){
-	changeColor(chg.getRed(), chg.getGreen(), chg.getBlue());
+	bintang.setFillColor(chg);
+}
+
+void stars::draw(){
+	bintang.draw();
 }

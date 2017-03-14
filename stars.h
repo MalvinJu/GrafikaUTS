@@ -7,6 +7,7 @@
 #include <vector>
 #include "VectorOperation.h"
 #include <cmath>
+#include "Shapeclip.h"
 using namespace std;
 
 class stars{
@@ -44,11 +45,13 @@ public	:
 	//chg : warna yang baru
 	void changeColor(Color chg);
 	
+	void draw();
 private	:
 	Point center; //point dari pusat bintang
 	int angles; //banyaknya segi dari bintang
 	vector<Point> data; //vector yang berisi Point dari sudut-sudut
 	Color color; //warna dari bintang
+	Shapeclip bintang;
 };
 
 #endif
