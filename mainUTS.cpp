@@ -325,21 +325,28 @@ void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
   while (lock) {}
   lock = true;
   for (int i=0 ; i<v.size() ; i++) {
-    v[i].erase();
     v[i].scale(1.1, xpusat, ypusat);
+  }  
+  lock = false;
+}
+
+void drawAll(std::vector<Shapeclip> &v, bool &lock) {
+  while (lock) {}
+  lock = true;
+  for (int i=0 ; i<v.size() ; i++) {
     v[i].draw();
   }  
   lock = false;
 }
 
+
 void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
   while (lock) {}
   lock = true;
   for (int i=0 ; i<v.size() ; i++) {
-    v[i].erase();
     v[i].scale(1/1.1, xpusat, ypusat);
-    v[i].draw();
-  }  
+  }
+	
   lock = false;
 }
 
@@ -393,12 +400,21 @@ void *keylistener(void *null) {
         zoomIn(vektorPlanet, lock.planet);
         zoomIn(vektorSatelit, lock.satelite);
         zoomIn(vektorAsteroid, lock.asteroid);
+        drawAll(vektorMatahari, lock.matahari);
+        drawAll(vektorPlanet, lock.planet);
+        drawAll(vektorSatelit, lock.satelite);
+        drawAll(vektorAsteroid, lock.asteroid);
+				
       } else if ((X == 'o') || (X == 'O')) { // Zoom out
         screen.ClearScreen();
         zoomOut(vektorMatahari, lock.matahari);
         zoomOut(vektorPlanet, lock.planet);
         zoomOut(vektorSatelit, lock.satelite);
         zoomOut(vektorAsteroid, lock.asteroid);
+        drawAll(vektorMatahari, lock.matahari);
+        drawAll(vektorPlanet, lock.planet);
+        drawAll(vektorSatelit, lock.satelite);
+        drawAll(vektorAsteroid, lock.asteroid);
       } else if (X == '1') {
         if (matahariDrawn) {
           eraseShapesInVector(vektorMatahari, lock.matahari);
