@@ -46,6 +46,7 @@ stars::stars(){
 	LineDrawer l = new LineDrawer();
 	l.drawPolygon(data, color);
 	free(&l);
+	free(&p);
 }
 
 stars::stars(int n_angles, Point p_center, int scale, Color c){
@@ -56,6 +57,7 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 	color = new Color(c.getRed(), c.getGreen(), c.getBlue());
 	data = new vector<Point>;
 	data.reserve(2 * angles + 1);
+	
 	if(angles == 3){
 		p.setPoint(0 + xcenter, ((-4) * scale) + ycenter);
 		data.push_back(p);
@@ -281,7 +283,9 @@ stars::stars(int n_angles, Point p_center, int scale, Color c){
 	
 	LineDrawer l = new LineDrawer();
 	l.drawPolygon(data, color);
+	
 	free(&l);
+	free(&p);
 }
 
 stars::~stars(){
