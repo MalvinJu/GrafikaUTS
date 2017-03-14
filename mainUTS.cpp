@@ -219,7 +219,7 @@ void drawMatahari() {
   while (lock.matahari) {}
   lock.matahari = true;
   for(int i = 0; i < vektorMatahari.size(); i++){
-    //vektorMatahari[i].Rotate(1);
+    vektorMatahari[i].Rotate(1);
     vektorMatahari[i].draw();
   }
   lock.matahari = false;
@@ -235,7 +235,13 @@ void drawStars() {
 }
 
 void makePlanets() {
-  make16segi(&vektorPlanet, Point(xpusat+200, ypusat), 0.3, Color(0,0, 255), Color(0,255,100));
+  make16segi(&vektorPlanet, Point(xpusat+100, ypusat+100), 0.3, Color(0,0, 255), Color(0,255,100));
+  
+  make16segi(&vektorPlanet, Point(xpusat+250, ypusat-50), 0.3, Color(0,0, 255), Color(244,66,78));
+  
+  make16segi(&vektorPlanet, Point(xpusat+300, ypusat-200), 0.3, Color(0,0, 255), Color(244,66,188));
+  
+  make16segi(&vektorPlanet, Point(xpusat+200, ypusat-350), 0.3, Color(0,0, 255), Color(185, 66, 244));
 }
 
 void drawPlanets() {
@@ -251,8 +257,17 @@ void drawPlanets() {
 }
 
 void makeSatelites() {
-  make16segi(&vektorSatelit, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
-  makeSatelite(&vektorSatelit, Point(xpusat-600, ypusat+50), 0.2);
+  make16segi(&vektorSatelit, Point(xpusat-100, ypusat+100), 0.3, Color(0,0, 100), Color(50,255,10));  
+  makeSatelite(&vektorSatelit, Point(xpusat-500, ypusat-250), 0.2);
+  
+  make16segi(&vektorSatelit, Point(xpusat-250, ypusat-50), 0.3, Color(0,0, 100), Color(46, 27, 193));  
+  makeSatelite(&vektorSatelit, Point(xpusat-600, ypusat-50), 0.2);
+  
+  make16segi(&vektorSatelit, Point(xpusat-300, ypusat-200), 0.3, Color(0,0, 100), Color(27, 177, 193));  
+  makeSatelite(&vektorSatelit, Point(xpusat-550, ypusat+100), 0.2);
+  
+  make16segi(&vektorSatelit, Point(xpusat-200, ypusat-350), 0.3, Color(0,0, 100), Color(27, 193, 35));  
+  makeSatelite(&vektorSatelit, Point(xpusat-400, ypusat+250), 0.2);
 }
 
 void drawSatelites() {
