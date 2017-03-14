@@ -23,7 +23,7 @@ Screen::Screen(){
 
 
 Color Screen::getColor(int r, int c){
-	if(r<0 || r > getHeight() || c < 0 || c >getWidth())
+	if(r <= 0 || r >= getHeight() || c <= 0 || c >= getWidth())
 		return Color(0,0,0);
 	long int location = (c+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (r+vinfo.yoffset) * finfo.line_length;
 	int red = *(unsigned char*)(fbp + location + 2);
@@ -34,7 +34,7 @@ Color Screen::getColor(int r, int c){
 }
 
 void Screen::setColor(int r, int c, int pixelSize, int red, int green, int blue){
-	if(r<0 || r > getHeight() || c < 0 || c >getWidth()) {
+	if(r <= 0 || r >= getHeight() || c <= 0 || c >= getWidth()) {
 		return;
 	}
 	else {
@@ -51,7 +51,7 @@ void Screen::setColor(int r, int c, int pixelSize, int red, int green, int blue)
 }
 
 void Screen::setColor(int r, int c, int pixelSize, Color color){
-	if(r<0 || r > getHeight() || c < 0 || c >getWidth())
+	if(r <= 0 || r >= getHeight() || c <= 0 || c >= getWidth())
 		return;
     else {
         for (int i = c; i < (c+pixelSize); i++) {
