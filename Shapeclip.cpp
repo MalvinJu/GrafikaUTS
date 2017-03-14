@@ -16,6 +16,7 @@ Shapeclip::Shapeclip(vector<Point>& starting_edge, Color C ){
 
 	center = calculate_center(starting_edge);
 	floodfill_seed = getFloodFillSeed(edges);
+	center = calculate_center(edges);
 }
 
 Shapeclip::~Shapeclip(){
@@ -62,11 +63,11 @@ void Shapeclip::Rotate(int theta){
 	floodfill_seed.moveBy(-center.getX(), -center.getY());
 	floodfill_seed.rotate(theta);
 	floodfill_seed.moveBy(center.getX(), center.getY());
-	draw();
+	//draw();
 }
 
 void Shapeclip::erase(){
-	linedrawer2.drawPolygon(edges,Border );
+	linedrawer2.drawPolygon(edges,Color(0,0,0) );
 	linedrawer2.rasterFill(edges, Color(0,0,0) );
 	//linedrawer2.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
 }
@@ -80,7 +81,7 @@ void Shapeclip::draw(){
 void Shapeclip::setFillColor(Color C){
 	erase();
 	Fill = C;
-	draw();
+	//draw();
 }
 //set Border Color to color c
 void Shapeclip::setBorderColor(Color c){
@@ -105,7 +106,8 @@ void Shapeclip::RotatePoros(int theta, Point poros){
 	//floodfill_seed.moveBy(-center.getX(), -center.getY());
 	floodfill_seed.rotatePoros(theta, poros);
 	//floodfill_seed.moveBy(center.getX(), center.getY());
-	draw();
+	center = calculate_center(edges);
+	//draw();
 }
 
 //tes pesawat parabola
@@ -118,9 +120,23 @@ void Shapeclip::PlaneParabola(int theta, Point poros){
 	draw();
 }
 
-void Shapeclip::scale(double x){
+void Shapeclip::scale(double x, int xa, int ya){
+	if ((xa == -99999) && (ya == -99999)) {
+		xa = center.getX();
+		ya = center.getY();
+	}
+	double tempx;
+	double tempy;
+
+	tempx = xa + ((center.getX() - xa) * x);
+	tempy = ya + ((center.getY() - ya) * x);
+	center.setPoint(tempx,tempy);
+
 	for(int i=0; i<edges.size();i++){
-		edges[i].x *=x;
-		edges[i].y *=x;
+		tempx = xa + ((edges[i].x - xa) * x);
+		tempy = ya + ((edges[i].y - ya) * x);
+		edges[i].x = tempx;
+		edges[i].y = tempy;
 	}
 }
+

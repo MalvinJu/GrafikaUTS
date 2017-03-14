@@ -60,11 +60,13 @@ Screen screen;
 LineDrawer linedrawer;
 LineDrawer linedrawer2;
 vector<Shapeclip> vektorPlanet;
-double xpusat = screen.getWidth()/4;
+vector<Shapeclip> vektorMatahari;
+vector<Shapeclip> vektorSatelit;
+double xpusat = screen.getWidth()/2;
 double ypusat = screen.getHeight()/2;
 
 /* Membuat 16 segi */
-void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale) {
+void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, Color f) {
   std::vector<Point> segiEnamBelas;
   segiEnamBelas.push_back(P);
   segiEnamBelas.push_back(Point(P.getX() + 75, P.getY() + 5));
@@ -82,7 +84,8 @@ void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale) {
   segiEnamBelas.push_back(Point(P.getX() - 135, P.getY() + 135));
   segiEnamBelas.push_back(Point(P.getX() - 110, P.getY() + 65));
   segiEnamBelas.push_back(Point(P.getX() - 60, P.getY() + 25));
-  Shapeclip segi16(segiEnamBelas, Color(50, 255, 50));
+  Shapeclip segi16(segiEnamBelas, c);
+  segi16.setFillColor(f);
   segi16.scale(scale);
   vektor->push_back(segi16);
   printf("segi");
@@ -143,6 +146,32 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
   printf("ASTEROID");
 }
 
+void drawMatahari() {
+  for(int i = 0; i < vektorMatahari.size(); i++){
+    //vektorMatahari[i].Rotate(1);
+    vektorMatahari[i].draw();
+  }
+}
+
+void drawPlanet() {
+  for(int i = 0; i < vektorPlanet.size(); i++){
+    //vektorMatahari[i].Rotate(1);
+    // vektorPlanet[i].erase();
+    vektorPlanet[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
+    // vektorPlanet[i].Rotate(1);
+    vektorPlanet[i].draw();
+  }
+}
+
+void drawSatelit() {
+  vektorSatelit[1].RotatePoros(1, Point(vektorSatelit[0].center.getX(), vektorSatelit[0].center.getY()));
+  vektorSatelit[0].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
+  vektorSatelit[1].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
+  vektorSatelit[1].Rotate(1);
+  vektorSatelit[0].draw();
+  vektorSatelit[1].draw();
+}
+
 int main() {
   screen.ClearScreen();
 
@@ -151,18 +180,25 @@ int main() {
   linedrawer2.setView(Point(0,0) , Point(screen.getWidth(), screen.getHeight()));
   // linedrawer2.setView(Point(screen.getWidth()/2, 0) , Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
 
-  /* BAGIAN KANAN YANG KECIL */
-  // vector<Point> body;
-  // body.push_back(Point(screen.getWidth()/2, 0));
-  // body.push_back(Point(screen.getWidth()/2 + 0.25*screen.getWidth(), 0));
-  // body.push_back(Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
-  // body.push_back(Point(screen.getWidth()/2, screen.getHeight()/2));
-  // Shapeclip kotak(body, Color(255,255,255));
-  // kotak.draw();
-
   Point centerKotak((screen.getWidth()/2 + screen.getWidth()/8), (screen.getHeight()/4));
-  makeAsteroid(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2), 1);
-  makeSatelite(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2), 1);
+
+  //Matahari
+  make16segi(&vektorMatahari, Point(xpusat, ypusat-150), 1, Color(255,53,0), Color(255,255,0));
+
+  //Planet
+  make16segi(&vektorPlanet, Point(xpusat+200, ypusat), 0.3, Color(0,0, 255), Color(0,255,100));
+  //make16segi(&vektorPlanet, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));
+
+  //Satelit & planet
+  make16segi(&vektorSatelit, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
+  makeSatelite(&vektorSatelit, Point(xpusat-600, ypusat+50), 0.2);
+
+  //Asteroid
+
+
+
+  // makeAsteroid(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2), 1);
+  // makeSatelite(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2), 1);
   // make16segi(&vektorPlanet, Point(400, 215), 1);
   // make16segi(&vektorPlanet, Point(500, 215), 0.5);
   // make16segi(&vektorPlanet, Point(600, 415), 0.4);
@@ -174,19 +210,16 @@ int main() {
   // make16segi(&vektorPlanet, Point(200, 315), 0.35);
   // make16segi(&vektorPlanet, Point(500, 515), 0.23);
 
-  make16segi(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2-100), 1);
-  //make16segi(&vektorPlanet, Point(0, 0), 1);
-  for(int i = 0; i < vektorPlanet.size(); i++){
-    //vektorPlanet[i].scale(2);
-    vektorPlanet[i].draw();
-  }
+  //make16segi(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2-100), 0.5);
+  //make16segi(&vektorPlanet, Point(1000,1000), 1);
+  
+  screen.setColor(1200,500, 1, 0, 255, 0);
 
   while(1){
-    for(int i = 0; i < vektorPlanet.size(); i++){
-      vektorPlanet[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
-        vektorPlanet[i].draw();
-        usleep(1000);
-    }
+    drawPlanet();
+    drawMatahari();
+    drawSatelit();
+    usleep(5000);
   }
   return 0;
 }

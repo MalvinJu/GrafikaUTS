@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 #ifndef __STARS__
 #define __STARS__
-=======
-#ifndef __Stars__
-#define __Stars__
->>>>>>> 51c6e1f83022430c375a292dc6c3b204cc0fe13e
 
 #include <iostream>
 #include <stdlib.h>
