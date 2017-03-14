@@ -80,6 +80,7 @@ bool planetDrawn = true;
 bool matahariDrawn = true;
 bool sateliteDrawn = true;
 bool asteroidDrawn = true;
+bool isStart = true;
 Lock lock;
 
 /*Membuat welcome page*/
@@ -111,18 +112,18 @@ void drawWelcomPage() {
   C.push_back(Point(600, 100));
 
   vector<Point> I;
-  I.push_back(Point(660, 200));
+  I.push_back(Point(655, 200));
   I.push_back(Point(650, 200));
   I.push_back(Point(650, 140));
 
   vector<Point> Lsmall;
   Lsmall.push_back(Point(730, 200));
   Lsmall.push_back(Point(710, 200));
-  Lsmall.push_back(Point(710, 140));
+  Lsmall.push_back(Point(710, 120));
 
   LineDrawer drawFont;
 
-  while (1) {
+  while (isStart) {
     usleep(10000);
     drawFont.drawPolyline(P, Color(rand()%255, rand()%255, rand()%255));
     drawFont.drawPolyline(L, Color(rand()%255, rand()%255, rand()%255));
@@ -408,6 +409,9 @@ void *keylistener(void *null) {
       } else if ((X == 'x') || (X == 'X')) {
         exit(0);
       }
+      else if (X == ' ') {
+        isStart = false;
+      }
   }
 }
 
@@ -442,6 +446,10 @@ int main() {
 
   pthread_t listener;
   pthread_create(&listener, NULL, keylistener, NULL);
+
+  //Draw welcome page
+  drawWelcomPage();
+  screen.ClearScreen();
 
   while(1){
     linedrawer2.drawBorder();
