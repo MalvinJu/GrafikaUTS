@@ -196,12 +196,14 @@ void drawSatelites() {
   lock.satelite = true;
   int x = vektorMatahari[0].center.getX();
   int y = vektorMatahari[0].center.getY();
-  vektorSatelit[1].RotatePoros(1, Point(vektorSatelit[0].center.getX(), vektorSatelit[0].center.getY()));
-  vektorSatelit[0].RotatePoros(1, Point(x, y));
-  vektorSatelit[1].RotatePoros(1, Point(x, y));
-  vektorSatelit[1].Rotate(1);
-  if (planetDrawn) vektorSatelit[0].draw();
-  if (sateliteDrawn) vektorSatelit[1].draw();
+  for (int i = 0; i < vektorSatelit.size() ; i+= 2) {
+    vektorSatelit[i+1].RotatePoros(1, Point(vektorSatelit[i].center.getX(), vektorSatelit[i].center.getY()));
+    vektorSatelit[i].RotatePoros(1, Point(x, y));
+    vektorSatelit[i+1].RotatePoros(1, Point(x, y));
+    vektorSatelit[i+1].Rotate(1);
+    if (planetDrawn) vektorSatelit[i].draw();
+    if (sateliteDrawn) vektorSatelit[i+1].draw();
+  }
   lock.satelite = false;
 }
 
