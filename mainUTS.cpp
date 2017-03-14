@@ -62,8 +62,13 @@ LineDrawer linedrawer2;
 vector<Shapeclip> vektorPlanet;
 vector<Shapeclip> vektorMatahari;
 vector<Shapeclip> vektorSatelit;
+vector<Shapeclip> vektorAsteroid;
 double xpusat = screen.getWidth()/2;
 double ypusat = screen.getHeight()/2;
+bool planetDrawn = true;
+bool matahariDrawn = true;
+bool sateliteDrawn = true;
+bool asteroidDrawn = true;
 
 /* Membuat 16 segi */
 void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, Color f) {
@@ -119,7 +124,7 @@ void makeSatelite(std::vector<Shapeclip> *vektor, Point P, double scale) {
   satelite.push_back(Point(P.getX(), P.getY() + 85));
   Shapeclip sateliteShape(satelite, Color(46,75,221));
   sateliteShape.scale(scale);
-  sateliteShape.setFillColor(Color(255,0,0));
+  sateliteShape.setFillColor(Color(100,150,255));
   vektor->push_back(sateliteShape);
   printf("SATELITE");
 }
@@ -141,7 +146,7 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
   asteroid.push_back(Point(P.getX() - 10, P.getY() + 55));
   Shapeclip asteroidShape(asteroid, Color(114, 63, 4));
   asteroidShape.scale(scale);
-  //asteroidShape.setFillColor(Color(255,0,0));
+  asteroidShape.setFillColor(Color(114,63,4));
   vektor->push_back(asteroidShape);
   printf("ASTEROID");
 }
@@ -153,7 +158,11 @@ void drawMatahari() {
   }
 }
 
-void drawPlanet() {
+void makePlanets() {
+  make16segi(&vektorPlanet, Point(xpusat+200, ypusat), 0.3, Color(0,0, 255), Color(0,255,100));
+}
+
+void drawPlanets() {
   for(int i = 0; i < vektorPlanet.size(); i++){
     //vektorMatahari[i].Rotate(1);
     // vektorPlanet[i].erase();
@@ -163,13 +172,85 @@ void drawPlanet() {
   }
 }
 
-void drawSatelit() {
+void makeSatelites() {
+  make16segi(&vektorSatelit, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
+  makeSatelite(&vektorSatelit, Point(xpusat-600, ypusat+50), 0.2);
+}
+
+void drawSatelites() {
   vektorSatelit[1].RotatePoros(1, Point(vektorSatelit[0].center.getX(), vektorSatelit[0].center.getY()));
   vektorSatelit[0].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
   vektorSatelit[1].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
   vektorSatelit[1].Rotate(1);
-  vektorSatelit[0].draw();
-  vektorSatelit[1].draw();
+  if (planetDrawn) vektorSatelit[0].draw();
+  if (sateliteDrawn) vektorSatelit[1].draw();
+}
+
+void makeAsteroids() {
+  for (int i=0; i<4 ; i++)
+    makeAsteroid(&vektorAsteroid, Point(rand()%screen.getWidth(), rand()%screen.getHeight()), ((float) rand() / (RAND_MAX)));  
+}
+
+void drawAsteroids() {
+  for(int i = 0; i < vektorAsteroid.size(); i++){
+    //vektorAsteroid[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
+    vektorAsteroid[i].Rotate(1);
+    vektorAsteroid[i].draw();
+  }
+}
+
+void eraseShapesInVector(std::vector<Shapeclip> v) {
+  for (int i=0 ; i<v.size() ; i++) {
+    v[i].erase();
+  }
+}
+
+// METODE HANDLER THREAD IO--------------------------------------------------------------------------------- //
+void *keylistener(void *null) {
+  while (1) {
+      char X = getch();
+      if (X == '\033') {
+        getch();
+        X = getch();
+
+        if (X == 'C') { // Right arrow
+
+        } else if (X == 'D') { // Left arrow
+
+        } else if (X == 'A') { // Up arrow
+
+        } else if (X == 'B') { // Down arrow
+
+        }
+
+      } else if ((X == 'i') || (X == 'I')) { // Zoom in
+        
+      } else if ((X == 'o') || (X == 'O')) { // Zoom out
+        
+      } else if (X == '1') {
+        if (matahariDrawn) {
+          eraseShapesInVector(vektorMatahari);
+        }
+        matahariDrawn = !matahariDrawn;
+      } else if (X == '2') {
+        if (planetDrawn) {
+          eraseShapesInVector(vektorPlanet);
+        }
+        planetDrawn = !planetDrawn;
+      } else if (X == '3') {
+        if (sateliteDrawn) {
+          eraseShapesInVector(vektorSatelit);
+        }
+        sateliteDrawn = !sateliteDrawn;
+      } else if (X == '4') {
+        if (asteroidDrawn) {
+          eraseShapesInVector(vektorAsteroid);
+        }
+        asteroidDrawn = !asteroidDrawn;
+      } else if ((X == 'x') || (X == 'X')) {
+        exit(0);
+      }
+  }
 }
 
 int main() {
@@ -177,7 +258,7 @@ int main() {
 
   // BAGIAN LAYAR CLIPPING
   //linedrawer.setView(Point(0,0) , Point(screen.getWidth(), screen.getHeight()));
-  linedrawer2.setView(Point(0,0) , Point(screen.getWidth(), screen.getHeight()));
+  linedrawer2.setView(Point(50,50) , Point(screen.getWidth()-50, screen.getHeight()-50));
   // linedrawer2.setView(Point(screen.getWidth()/2, 0) , Point(screen.getWidth()/2 + 0.25*screen.getWidth(), screen.getHeight()/2));
 
   Point centerKotak((screen.getWidth()/2 + screen.getWidth()/8), (screen.getHeight()/4));
@@ -186,15 +267,14 @@ int main() {
   make16segi(&vektorMatahari, Point(xpusat, ypusat-150), 1, Color(255,53,0), Color(255,255,0));
 
   //Planet
-  make16segi(&vektorPlanet, Point(xpusat+200, ypusat), 0.3, Color(0,0, 255), Color(0,255,100));
+  makePlanets();
   //make16segi(&vektorPlanet, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));
 
   //Satelit & planet
-  make16segi(&vektorSatelit, Point(xpusat-400, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
-  makeSatelite(&vektorSatelit, Point(xpusat-600, ypusat+50), 0.2);
+  makeSatelites();  
 
   //Asteroid
-
+  makeAsteroids();
 
 
   // makeAsteroid(&vektorPlanet, Point(screen.getWidth()/2, screen.getHeight()/2), 1);
@@ -215,11 +295,17 @@ int main() {
   
   screen.setColor(1200,500, 1, 0, 255, 0);
 
+  pthread_t listener;
+  pthread_create(&listener, NULL, keylistener, NULL);
+
   while(1){
-    drawPlanet();
-    drawMatahari();
-    drawSatelit();
+    if (planetDrawn) drawPlanets();
+    if (matahariDrawn) drawMatahari();
+    drawSatelites();
+    if (asteroidDrawn) drawAsteroids();
     usleep(5000);
   }
+
+  pthread_join(listener, NULL);
   return 0;
 }
