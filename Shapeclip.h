@@ -45,7 +45,7 @@ public:
 
 	void erase();
 	void draw();
-	void scale(double x);
+	void scale(double x, int xa=-99999, int ya=-99999);
 	Point floodfill_seed;
 	vector<Point> edges;
 	Point center;

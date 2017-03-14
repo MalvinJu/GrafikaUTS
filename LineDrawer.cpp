@@ -27,7 +27,7 @@ void LineDrawer::setView(Point P1, Point P2){
 	P.push_back(Point(xr,yr));
 	P.push_back(Point(xr,yl));
 
-	//drawPolygon(P,Color(255,255,255));
+	drawPolygon(P,Color(255,255,255));
 }
 
 
@@ -331,6 +331,16 @@ void LineDrawer::getRasterInfoBresenhamLine (Point P1, Point P2, vector< vector<
 	x0 = P1.getX(); y0 = P1.getY();
 	x1 = P2.getX(); y1 = P2.getY();
 
+	if (x0 < xl) x0 = xl;
+	if (x1 < xl) x1 = xl;
+	if (x0 > xr) x0 = xr;
+	if (x1 > xr) x1 = xr;
+
+	if (y0 < yl) y0 = yl;
+	if (y1 < yl) y1 = yl;
+	if (y0 > yr) y0 = yr;
+	if (y1 > yr) y1 = yr;
+	
 	P1 = Point(x0,y0),P2=Point(x1,y1);
 	if (P1.getX() > P2.getX()) {
 		P1.swapPoint(&P2); 
@@ -459,12 +469,19 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 			q.push(Point(x,y+1));
 			q.push(Point(x,y-1));
 		}
-	}
-
-	
+	}	
 	
 }
 
+void LineDrawer::drawBorder() {
+	vector<Point> P;
+	P.push_back(Point(xl,yl));
+	P.push_back(Point(xl,yr));
+	P.push_back(Point(xr,yr));
+	P.push_back(Point(xr,yl));
+
+	drawPolygon(P,Color(255,255,255));	
+}
 
 void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	int  MaxX = -1,MaxY=-1, MinX=1000000, MinY=1000000;
@@ -474,15 +491,24 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 		MinX = min(MinX,edges[i].getX());
 		MinY = min(MinY,edges[i].getY());
 	}
+	
+	if ((MaxY <= yl)||(MinX >= xr)||(MaxX <= xl)||(MinY >= yr)) {
+		return;
+	}
+
+	//MinY = max(MinY, yl);
+	//MaxY = min(MaxY, yr);
+	//MaxX = min(MaxX, xr);
+	//MinX = max(MinX, xl);
+
 	vector< vector<int> > borders ( MaxY+1, vector<int>(0) );
 	for( int i = 0, k = i + 1; i < edges.size(); ++ i, ++k ){
 		if( k == edges.size() ) k = 0;
 		getRasterInfoBresenhamLine(edges[i], edges[k], borders);
 	}
 	
-	for( auto& v:borders) sort( v.begin(), v.end() );
+	for( auto& v:borders) sort( v.begin(), v.end());
 	
-
 	MinY = max(MinY, yl);
 	MaxY = min(MaxY, yr);
 	MaxX = min(MaxX, xr);

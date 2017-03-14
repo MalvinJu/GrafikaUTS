@@ -23,10 +23,14 @@ void Point::setPoint(double x, double y) {
 
 
 int Point::getX() {
+	if (x < 0)
+		return 0;
 	return round(x);
 }
 
 int Point::getY() {
+	if (y < 0)
+		return 0;
 	return round(y);
 }
 
