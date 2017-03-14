@@ -1,6 +1,5 @@
 #ifndef __STARS__
 #define __STARS__
-
 #include <iostream>
 #include <stdlib.h>
 #include "LineDrawer.h"
