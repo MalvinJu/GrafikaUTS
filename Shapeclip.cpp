@@ -138,5 +138,6 @@ void Shapeclip::scale(double x, int xa, int ya){
 		edges[i].x = tempx;
 		edges[i].y = tempy;
 	}
+	printf("scaled");
 }
 

@@ -54,6 +54,12 @@ char getch(void)
 }
 //=============================================
 
+typedef struct {
+  bool matahari = false;
+  bool planet = false;
+  bool satelite = false;
+  bool asteroid = false;
+} Lock;
 
 //VARIABEL GLOBAL
 Screen screen;
@@ -69,6 +75,9 @@ bool planetDrawn = true;
 bool matahariDrawn = true;
 bool sateliteDrawn = true;
 bool asteroidDrawn = true;
+Lock lock;
+
+
 
 /* Membuat 16 segi */
 void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, Color f) {
@@ -152,10 +161,13 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
 }
 
 void drawMatahari() {
+  while (lock.matahari) {}
+  lock.matahari = true;
   for(int i = 0; i < vektorMatahari.size(); i++){
     //vektorMatahari[i].Rotate(1);
     vektorMatahari[i].draw();
   }
+  lock.matahari = false;
 }
 
 void makePlanets() {
@@ -163,6 +175,8 @@ void makePlanets() {
 }
 
 void drawPlanets() {
+  while (lock.planet) {}
+  lock.planet = true;
   for(int i = 0; i < vektorPlanet.size(); i++){
     //vektorMatahari[i].Rotate(1);
     // vektorPlanet[i].erase();
@@ -170,6 +184,7 @@ void drawPlanets() {
     // vektorPlanet[i].Rotate(1);
     vektorPlanet[i].draw();
   }
+  lock.planet = false;
 }
 
 void makeSatelites() {
@@ -178,12 +193,15 @@ void makeSatelites() {
 }
 
 void drawSatelites() {
+  while (lock.satelite) {}
+  lock.satelite = true;
   vektorSatelit[1].RotatePoros(1, Point(vektorSatelit[0].center.getX(), vektorSatelit[0].center.getY()));
   vektorSatelit[0].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
   vektorSatelit[1].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
   vektorSatelit[1].Rotate(1);
   if (planetDrawn) vektorSatelit[0].draw();
   if (sateliteDrawn) vektorSatelit[1].draw();
+  lock.satelite = false;
 }
 
 void makeAsteroids() {
@@ -192,16 +210,47 @@ void makeAsteroids() {
 }
 
 void drawAsteroids() {
+  while (lock.asteroid) {}
+  lock.asteroid = true;
   for(int i = 0; i < vektorAsteroid.size(); i++){
     //vektorAsteroid[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
     vektorAsteroid[i].Rotate(1);
     vektorAsteroid[i].draw();
   }
+  lock.asteroid = false;
 }
 
 void eraseShapesInVector(std::vector<Shapeclip> v) {
   for (int i=0 ; i<v.size() ; i++) {
     v[i].erase();
+  }
+}
+
+void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
+  while (lock) {}
+  lock = true;
+  for (int i=0 ; i<v.size() ; i++) {
+    v[i].erase();
+    v[i].scale(1.1, xpusat, ypusat);
+    v[i].draw();
+  }  
+  lock = false;
+}
+
+void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
+  while (lock) {}
+  lock = true;
+  for (int i=0 ; i<v.size() ; i++) {
+    v[i].erase();
+    v[i].scale(1/1.1, xpusat, ypusat);
+    v[i].draw();
+  }  
+  lock = false;
+}
+
+void moveAll(std::vector<Shapeclip> v, int x, int y) {
+  for (int i=0 ; i<v.size() ; i++) {
+    v[i].moveBy(x, y);
   }
 }
 
@@ -214,7 +263,8 @@ void *keylistener(void *null) {
         X = getch();
 
         if (X == 'C') { // Right arrow
-
+          //moveAll(vektorMatahari, 5, 0);
+          vektorMatahari[0].moveBy(5,0);
         } else if (X == 'D') { // Left arrow
 
         } else if (X == 'A') { // Up arrow
@@ -224,9 +274,17 @@ void *keylistener(void *null) {
         }
 
       } else if ((X == 'i') || (X == 'I')) { // Zoom in
-        
+        screen.ClearScreen();
+        zoomIn(vektorMatahari, lock.matahari);
+        zoomIn(vektorPlanet, lock.planet);
+        zoomIn(vektorSatelit, lock.satelite);
+        zoomIn(vektorAsteroid, lock.asteroid);
       } else if ((X == 'o') || (X == 'O')) { // Zoom out
-        
+        screen.ClearScreen();
+        zoomOut(vektorMatahari, lock.matahari);
+        zoomOut(vektorPlanet, lock.planet);
+        zoomOut(vektorSatelit, lock.satelite);
+        zoomOut(vektorAsteroid, lock.asteroid);
       } else if (X == '1') {
         if (matahariDrawn) {
           eraseShapesInVector(vektorMatahari);
