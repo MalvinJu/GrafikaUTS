@@ -77,7 +77,56 @@ bool sateliteDrawn = true;
 bool asteroidDrawn = true;
 Lock lock;
 
+/*Membuat welcome page*/
+void drawWelcomPage() {
+  /* initialize random seed: */
+  srand (time(NULL));
 
+  vector<Point> P;
+  P.push_back(Point(200, 200));
+  P.push_back(Point(200, 100));
+  P.push_back(Point(250, 100));
+  P.push_back(Point(250, 150));
+  P.push_back(Point(200, 150));
+
+  vector<Point> L;
+  L.push_back(Point(350, 200));
+  L.push_back(Point(300, 200));
+  L.push_back(Point(300, 100));
+  
+  vector<Point> A;
+  A.push_back(Point(400, 200));
+  A.push_back(Point(450, 100));
+  A.push_back(Point(500, 200));
+
+  vector<Point> C;
+  C.push_back(Point(600, 200));
+  C.push_back(Point(550, 200));
+  C.push_back(Point(550, 100));
+  C.push_back(Point(600, 100));
+
+  vector<Point> I;
+  I.push_back(Point(660, 200));
+  I.push_back(Point(650, 200));
+  I.push_back(Point(650, 140));
+
+  vector<Point> Lsmall;
+  Lsmall.push_back(Point(730, 200));
+  Lsmall.push_back(Point(710, 200));
+  Lsmall.push_back(Point(710, 140));
+
+  LineDrawer drawFont;
+
+  while (1) {
+    usleep(10000);
+    drawFont.drawPolyline(P, Color(rand()%255, rand()%255, rand()%255));
+    drawFont.drawPolyline(L, Color(rand()%255, rand()%255, rand()%255));
+    drawFont.drawPolyline(A, Color(rand()%255, rand()%255, rand()%255));
+    drawFont.drawPolyline(C, Color(rand()%255, rand()%255, rand()%255));
+    drawFont.drawPolyline(I, Color(rand()%255, rand()%255, rand()%255));
+    drawFont.drawPolyline(Lsmall, Color(rand()%255, rand()%255, rand()%255));
+  }
+}
 
 /* Membuat 16 segi */
 void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, Color f) {
