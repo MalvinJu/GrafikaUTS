@@ -151,7 +151,7 @@ void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, 
   segi16.setFillColor(f);
   segi16.scale(scale);
   vektor->push_back(segi16);
-  printf("segi");
+  //printf("segi");
 }
 
 void makeSatelite(std::vector<Shapeclip> *vektor, Point P, double scale) {
@@ -184,7 +184,7 @@ void makeSatelite(std::vector<Shapeclip> *vektor, Point P, double scale) {
   sateliteShape.scale(scale);
   sateliteShape.setFillColor(Color(100,150,255));
   vektor->push_back(sateliteShape);
-  printf("SATELITE");
+  //printf("SATELITE");
 }
 
 void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
@@ -206,7 +206,7 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
   asteroidShape.scale(scale);
   asteroidShape.setFillColor(Color(50,32,4));
   vektor->push_back(asteroidShape);
-  printf("ASTEROID");
+  //printf("ASTEROID");
 }
 
 void drawMatahari() {
@@ -265,8 +265,17 @@ void drawAsteroids() {
   while (lock.asteroid) {}
   lock.asteroid = true;
   for(int i = 0; i < vektorAsteroid.size(); i++){
+    int fx = 1;
+    int fy = 1;
+    if (i % 4 == 1) fx = -1;
+    if (i % 4 == 2) fy = -1;
+    if (i % 4 == 3) {
+      fx = -1;
+      fy = -1;
+    }
+
     //vektorAsteroid[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
-    vektorAsteroid[i].moveBy(1-rand()%2, 1-rand()%2);
+    vektorAsteroid[i].moveBy((1-rand()%2)*fx, (1-rand()%2)*fy);
     vektorAsteroid[i].Rotate(1);
     vektorAsteroid[i].draw();
   }
@@ -418,6 +427,7 @@ int main() {
   pthread_create(&listener, NULL, keylistener, NULL);
 
   while(1){
+    linedrawer2.drawBorder();
     if (planetDrawn) drawPlanets();
     if (matahariDrawn) drawMatahari();
     drawSatelites();

@@ -48,6 +48,8 @@ public:
 	void floodFill4Seed (int x, int y, Color cBorder, Color cNew);
 
 	void rasterFill( vector<Point>& edges, Color color);
+
+	void drawBorder();
 	
 	int xl,yl,xr,yr;
 	

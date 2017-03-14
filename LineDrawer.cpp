@@ -473,6 +473,15 @@ void LineDrawer::floodFill4Seed (int x, int y, Color cBorder, Color cNew) {
 	
 }
 
+void LineDrawer::drawBorder() {
+	vector<Point> P;
+	P.push_back(Point(xl,yl));
+	P.push_back(Point(xl,yr));
+	P.push_back(Point(xr,yr));
+	P.push_back(Point(xr,yl));
+
+	drawPolygon(P,Color(255,255,255));	
+}
 
 void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	int  MaxX = -1,MaxY=-1, MinX=1000000, MinY=1000000;
