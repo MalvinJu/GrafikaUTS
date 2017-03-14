@@ -155,7 +155,7 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
   asteroid.push_back(Point(P.getX() - 10, P.getY() + 55));
   Shapeclip asteroidShape(asteroid, Color(114, 63, 4));
   asteroidShape.scale(scale);
-  asteroidShape.setFillColor(Color(114,63,4));
+  asteroidShape.setFillColor(Color(50,32,4));
   vektor->push_back(asteroidShape);
   printf("ASTEROID");
 }
@@ -205,8 +205,8 @@ void drawSatelites() {
   lock.satelite = false;
 }
 
-void makeAsteroids() {
-  for (int i=0; i<4 ; i++)
+void makeAsteroids(int x) {
+  for (int i=0; i<x ; i++)
     makeAsteroid(&vektorAsteroid, Point(rand()%screen.getWidth(), rand()%screen.getHeight()), ((float) rand() / (RAND_MAX)));  
 }
 
@@ -215,6 +215,7 @@ void drawAsteroids() {
   lock.asteroid = true;
   for(int i = 0; i < vektorAsteroid.size(); i++){
     //vektorAsteroid[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
+    vektorAsteroid[i].moveBy(1-rand()%2, 1-rand()%2);
     vektorAsteroid[i].Rotate(1);
     vektorAsteroid[i].draw();
   }
@@ -328,6 +329,8 @@ void *keylistener(void *null) {
           eraseShapesInVector(vektorAsteroid, lock.asteroid);
         }
         asteroidDrawn = !asteroidDrawn;
+      } else if (X == '5') {
+        makeAsteroids(1);
       } else if ((X == 'x') || (X == 'X')) {
         exit(0);
       }
@@ -335,6 +338,7 @@ void *keylistener(void *null) {
 }
 
 int main() {
+  srand(12);
   screen.ClearScreen();
 
   // BAGIAN LAYAR CLIPPING
@@ -355,7 +359,7 @@ int main() {
   makeSatelites();  
 
   //Asteroid
-  makeAsteroids();
+  makeAsteroids(4);
   
   screen.setColor(1200,500, 1, 0, 255, 0);
 
