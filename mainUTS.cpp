@@ -260,7 +260,7 @@ void makeSatelites() {
   make16segi(&vektorSatelit, Point(xpusat-500, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
   makeSatelite(&vektorSatelit, Point(xpusat-700, ypusat+50), 0.2);
   
-  make16segi(&vektorSatelit, Point(xpusat+600, ypusat-350), 0.6, Color(0,0, 100), Color(46, 27, 193));  
+  make16segi(&vektorSatelit, Point(xpusat+600, ypusat-350), 0.7, Color(0,0, 100), Color(46, 27, 193));   
   makeSatelite(&vektorSatelit, Point(xpusat+500, ypusat-130), 0.2);
   
   make16segi(&vektorSatelit, Point(xpusat-300, ypusat-200), 0.1, Color(0,0, 100), Color(27, 177, 193));  
@@ -289,6 +289,7 @@ void drawSatelites() {
 void makeAsteroids(int x) {
   for (int i=0; i<x ; i++)
     makeAsteroid(&vektorAsteroid, Point(rand()%screen.getWidth(), rand()%screen.getHeight()), ((float) rand() / (RAND_MAX)));  
+  makeAsteroid(&vektorAsteroid, Point(xpusat+600, ypusat-350), 1);
 }
 
 void drawAsteroids() {
@@ -325,28 +326,29 @@ void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
   while (lock) {}
   lock = true;
   for (int i=0 ; i<v.size() ; i++) {
+    v[i].erase();
     v[i].scale(1.1, xpusat, ypusat);
-  }  
-  lock = false;
-}
-
-void drawAll(std::vector<Shapeclip> &v, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
     v[i].draw();
   }  
   lock = false;
 }
 
-
 void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
   while (lock) {}
   lock = true;
   for (int i=0 ; i<v.size() ; i++) {
+    v[i].erase();
     v[i].scale(1/1.1, xpusat, ypusat);
-  }
-	
+  }  
+  lock = false;
+}
+
+void drawAll(std::vector<Shapeclip>& v, bool &lock){
+  while (lock) {}
+  lock = true;
+  for (int i=0 ; i<v.size() ; i++) {
+    v[i].draw();
+  }  
   lock = false;
 }
 
@@ -404,7 +406,7 @@ void *keylistener(void *null) {
         drawAll(vektorPlanet, lock.planet);
         drawAll(vektorSatelit, lock.satelite);
         drawAll(vektorAsteroid, lock.asteroid);
-				
+
       } else if ((X == 'o') || (X == 'O')) { // Zoom out
         screen.ClearScreen();
         zoomOut(vektorMatahari, lock.matahari);
@@ -483,6 +485,7 @@ int main() {
   screen.ClearScreen();
 
   while(1){
+    screen.ClearScreen();
     linedrawer2.drawBorder();
     if (planetDrawn) drawPlanets();
     if (matahariDrawn) drawMatahari();
