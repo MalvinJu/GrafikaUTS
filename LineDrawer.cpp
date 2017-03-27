@@ -501,7 +501,7 @@ void LineDrawer::rasterFill( vector<Point>& edges, Color color) {
 	//MaxX = min(MaxX, xr);
 	//MinX = max(MinX, xl);
 
-	vector< vector<int> > borders ( MaxY+1, vector<int>(0) );
+	vector< vector<int> > borders ( MaxY+20, vector<int>(0) );
 	for( int i = 0, k = i + 1; i < edges.size(); ++ i, ++k ){
 		if( k == edges.size() ) k = 0;
 		getRasterInfoBresenhamLine(edges[i], edges[k], borders);
