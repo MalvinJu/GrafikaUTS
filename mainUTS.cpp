@@ -330,30 +330,24 @@ void *keylistener(void *null) {
         if (X == 'C') { // Right arrow
           screen.ClearScreen();
           mainFolder->moveBy( 5, 0 );
-          mainFolder->draw();
           //vektorMatahari[0].moveBy(5,0);
         } else if (X == 'D') { // Left arrow
           screen.ClearScreen();
           mainFolder->moveBy( -5, 0 );
-          mainFolder->draw();
         } else if (X == 'B') { // Down arrow
           screen.ClearScreen();
           mainFolder->moveBy( 0, 5 );
-          mainFolder->draw();
         } else if (X == 'A') { // Up arrow
           screen.ClearScreen();
           mainFolder->moveBy( 0, -5 );
-          mainFolder->draw();
         }
 
       } else if ((X == 'i') || (X == 'I')) { // Zoom in
         screen.ClearScreen();
         mainFolder->scale( 1.1, xpusat, ypusat );
-        mainFolder->draw();
       } else if ((X == 'o') || (X == 'O')) { // Zoom out
         screen.ClearScreen();
         mainFolder->scale( 1/1.1, xpusat, ypusat );
-        mainFolder->draw();
       } else if ((X == 'x') || (X == 'X')) {
         exit(0);
       }
@@ -410,7 +404,7 @@ int main() {
     mainFolder->draw();
     int yyy = 2;
     Folder::print(mainFolder, 80, yyy);
-    usleep(5000);
+    usleep(20000);
   }
 
   pthread_join(listener, NULL);
