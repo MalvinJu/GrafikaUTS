@@ -6,6 +6,7 @@
 #include "Shapeclip.h"
 #include "readfile.cpp"
 #include "stars.h"
+#include "Folder.h"
 #include <iostream>
 #include <stdlib.h>
 #include <unistd.h>
@@ -21,6 +22,7 @@ using namespace std;
 
 //KEYPRESS HANDLER==============================
 static struct termios old, news;
+
 
 /*Init Termios*/
 void initTermios(int echo)
@@ -67,10 +69,10 @@ typedef struct {
 Screen screen;
 LineDrawer linedrawer;
 LineDrawer linedrawer2;
-vector<Shapeclip> vektorPlanet;
-vector<Shapeclip> vektorMatahari;
-vector<Shapeclip> vektorSatelit;
-vector<Shapeclip> vektorAsteroid;
+shared_ptr<Folder> mainFolder( new Folder("main") );
+shared_ptr<Folder> folderPlanet = mainFolder->create_child_folder("planets");
+shared_ptr<Folder> folderMatahari = mainFolder->create_child_folder("mataharis");
+shared_ptr<Folder> folderAsteroid = mainFolder->create_child_folder("asteroids");
 
 vector<stars> vektorBintang;
 
@@ -135,7 +137,7 @@ void drawWelcomPage() {
 }
 
 /* Membuat 16 segi */
-void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, Color f) {
+shared_ptr<Shapeclip> make16segi(Point P, double scale, Color c, Color f) {
   std::vector<Point> segiEnamBelas;
   segiEnamBelas.push_back(P);
   segiEnamBelas.push_back(Point(P.getX() + 75, P.getY() + 5));
@@ -153,14 +155,14 @@ void make16segi(std::vector<Shapeclip> *vektor, Point P, double scale, Color c, 
   segiEnamBelas.push_back(Point(P.getX() - 135, P.getY() + 135));
   segiEnamBelas.push_back(Point(P.getX() - 110, P.getY() + 65));
   segiEnamBelas.push_back(Point(P.getX() - 60, P.getY() + 25));
-  Shapeclip segi16(segiEnamBelas, c);
-  segi16.setFillColor(f);
-  segi16.scale(scale);
-  vektor->push_back(segi16);
+  shared_ptr<Shapeclip> segi16( new Shapeclip(segiEnamBelas, c) );
+  segi16->setFillColor(f);
+  segi16->scale(scale);
+  return segi16;
   //printf("segi");
 }
 
-void makeSatelite(std::vector<Shapeclip> *vektor, Point P, double scale) {
+shared_ptr<Shapeclip> makeSatelite(Point P, double scale) {
   std::vector<Point> satelite;
   satelite.push_back(P);
   satelite.push_back(Point(P.getX() + 100, P.getY()));
@@ -186,14 +188,14 @@ void makeSatelite(std::vector<Shapeclip> *vektor, Point P, double scale) {
   satelite.push_back(Point(P.getX() + 125, P.getY() + 50));
   satelite.push_back(Point(P.getX() + 100, P.getY() + 85));
   satelite.push_back(Point(P.getX(), P.getY() + 85));
-  Shapeclip sateliteShape(satelite, Color(46,75,221));
-  sateliteShape.scale(scale);
-  sateliteShape.setFillColor(Color(100,150,255));
-  vektor->push_back(sateliteShape);
+  shared_ptr<Shapeclip> sateliteShape( new Shapeclip(satelite, Color(46,75,221)) );
+  sateliteShape->scale(scale);
+  sateliteShape->setFillColor(Color(100,150,255));
+  return sateliteShape;
   //printf("SATELITE");
 }
 
-void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
+shared_ptr<Shapeclip> makeAsteroid(Point P, double scale) {
   std::vector<Point> asteroid;
   asteroid.push_back(P);
   asteroid.push_back(Point(P.getX() + 30, P.getY()));
@@ -208,19 +210,19 @@ void makeAsteroid(std::vector<Shapeclip> *vektor, Point P, double scale) {
   asteroid.push_back(Point(P.getX() + 5, P.getY() + 92));
   asteroid.push_back(Point(P.getX() - 3, P.getY() + 115));
   asteroid.push_back(Point(P.getX() - 10, P.getY() + 55));
-  Shapeclip asteroidShape(asteroid, Color(114, 63, 4));
-  asteroidShape.scale(scale);
-  asteroidShape.setFillColor(Color(50,32,4));
-  vektor->push_back(asteroidShape);
+  shared_ptr<Shapeclip> asteroidShape( new Shapeclip(asteroid, Color(114, 63, 4)) );
+  
+  asteroidShape->scale(scale);
+  asteroidShape->setFillColor(Color(50,32,4));
+  return asteroidShape;
   //printf("ASTEROID");
 }
 
-void drawMatahari() {
+void simulateMatahari() {
   while (lock.matahari) {}
   lock.matahari = true;
-  for(int i = 0; i < vektorMatahari.size(); i++){
-    vektorMatahari[i].Rotate(1);
-    vektorMatahari[i].draw();
+  for( auto& it:folderMatahari->get_shapes()){
+    it->Rotate(1);
   }
   lock.matahari = false;
 }
@@ -235,66 +237,70 @@ void drawStars() {
 }
 
 void makePlanets() {
-  make16segi(&vektorPlanet, Point(xpusat+100, ypusat+100), 0.3, Color(0,0, 255), Color(0,255,100));
+  shared_ptr<Folder> folderPlanet1 = folderPlanet->create_child_folder("planet1");
+  shared_ptr<Folder> folderPlanet2 = folderPlanet->create_child_folder("planet2");
+  shared_ptr<Folder> folderPlanet3 = folderPlanet->create_child_folder("planet3");
+  shared_ptr<Folder> folderPlanet4 = folderPlanet->create_child_folder("planet4");
   
-  make16segi(&vektorPlanet, Point(xpusat+350, ypusat-50), 0.2, Color(0,0, 255), Color(244,66,78));
-  
-  make16segi(&vektorPlanet, Point(xpusat+1000, ypusat-200), 1, Color(0,0, 255), Color(244,66,188));
-  
-  make16segi(&vektorPlanet, Point(xpusat-1200, ypusat-350), 0.1, Color(0,0, 255), Color(185, 66, 244));
-}
-
-void drawPlanets() {
-  while (lock.planet) {}
-  lock.planet = true;
-  int x = vektorMatahari[0].center.getX();
-  int y = vektorMatahari[0].center.getY();
-  for(int i = 0; i < vektorPlanet.size(); i++){
-    vektorPlanet[i].RotatePoros(1, Point(x, y));
-    vektorPlanet[i].draw();
-  }
-  lock.planet = false;
+  folderPlanet1->push_shape( make16segi(Point(xpusat+100, ypusat+100), 0.3, Color(0,0, 255), Color(0,255,100)) );
+  folderPlanet2->push_shape( make16segi(Point(xpusat+350, ypusat-50), 0.2, Color(0,0, 255), Color(244,66,78)) );
+  folderPlanet3->push_shape( make16segi(Point(xpusat+1000, ypusat-200), 1, Color(0,0, 255), Color(244,66,188)) );
+  folderPlanet4->push_shape( make16segi(Point(xpusat-1200, ypusat-350), 0.1, Color(0,0, 255), Color(185, 66, 244)) );
 }
 
 void makeSatelites() {
-  make16segi(&vektorSatelit, Point(xpusat-500, ypusat), 0.3, Color(0,0, 100), Color(50,255,10));  
-  makeSatelite(&vektorSatelit, Point(xpusat-700, ypusat+50), 0.2);
+  shared_ptr<Folder> folderPlanet5 = folderPlanet->create_child_folder("planet5");
+  shared_ptr<Folder> folderPlanet6 = folderPlanet->create_child_folder("planet6");
+  shared_ptr<Folder> folderPlanet7 = folderPlanet->create_child_folder("planet7");
+  shared_ptr<Folder> folderPlanet8 = folderPlanet->create_child_folder("planet8");
+
+  folderPlanet5->push_shape( make16segi(Point(xpusat-500, ypusat), 0.3, Color(0,0, 100), Color(50,255,10)) );
+  folderPlanet5->push_shape( makeSatelite(Point(xpusat-700, ypusat+50), 0.2) );
   
-  make16segi(&vektorSatelit, Point(xpusat+600, ypusat-350), 0.6, Color(0,0, 100), Color(46, 27, 193));  
-  makeSatelite(&vektorSatelit, Point(xpusat+500, ypusat-130), 0.2);
-  
-  make16segi(&vektorSatelit, Point(xpusat-300, ypusat-200), 0.1, Color(0,0, 100), Color(27, 177, 193));  
-  makeSatelite(&vektorSatelit, Point(xpusat-450, ypusat-100), 0.08);
-  
-  make16segi(&vektorSatelit, Point(xpusat-200, ypusat-350), 0.15, Color(0,0, 100), Color(27, 193, 35));  
-  makeSatelite(&vektorSatelit, Point(xpusat-400, ypusat-250), 0.1);
+  folderPlanet6->push_shape( make16segi(Point(xpusat+600, ypusat-350), 0.6, Color(0,0, 100), Color(46, 27, 193)) );
+  folderPlanet6->push_shape( makeSatelite(Point(xpusat+500, ypusat-130), 0.2) );
+
+  folderPlanet7->push_shape( make16segi(Point(xpusat-300, ypusat-200), 0.1, Color(0,0, 100), Color(27, 177, 193)) );
+  folderPlanet7->push_shape( makeSatelite(Point(xpusat-450, ypusat-100), 0.08) );
+
+  folderPlanet8->push_shape( make16segi(Point(xpusat-200, ypusat-350), 0.15, Color(0,0, 100), Color(27, 193, 35)) );
+  folderPlanet8->push_shape( makeSatelite(Point(xpusat-400, ypusat-250), 0.1) );
 }
 
-void drawSatelites() {
-  while (lock.satelite) {}
-  lock.satelite = true;
-  int x = vektorMatahari[0].center.getX();
-  int y = vektorMatahari[0].center.getY();
-  for (int i = 0; i < vektorSatelit.size() ; i+= 2) {
-    vektorSatelit[i+1].RotatePoros(1, Point(vektorSatelit[i].center.getX(), vektorSatelit[i].center.getY()));
-    vektorSatelit[i].RotatePoros(1, Point(x, y));
-    vektorSatelit[i+1].RotatePoros(1, Point(x, y));
-    vektorSatelit[i+1].Rotate(1);
-    if (planetDrawn) vektorSatelit[i].draw();
-    if (sateliteDrawn) vektorSatelit[i+1].draw();
+void simulatePlanets() {
+  while (lock.planet) {}
+  lock.planet = true;
+
+  int x = folderMatahari->get_shapes()[0]->center.getX();
+  int y = folderMatahari->get_shapes()[0]->center.getY();
+  
+  for( auto& it:folderPlanet->get_folders()){
+    auto shapes = it->get_shapes();
+    if( shapes.size() >= 1 ){ // just planet
+      shapes[0]->RotatePoros(1, Point(x,y));
+    }
+    
+    if( shapes.size() >= 2 ){
+      shapes[1]->RotatePoros(1, Point(shapes[0]->center.getX(), shapes[0]->center.getY()) );
+      shapes[1]->RotatePoros(1, Point(x,y) );
+      shapes[1]->Rotate(1);
+    }
   }
-  lock.satelite = false;
+  
+  lock.planet = false;
 }
 
-void makeAsteroids(int x) {
-  for (int i=0; i<x ; i++)
-    makeAsteroid(&vektorAsteroid, Point(rand()%screen.getWidth(), rand()%screen.getHeight()), ((float) rand() / (RAND_MAX)));  
+
+void makeAsteroids(int N) {
+  for (int i=0; i<N ; i++)
+    folderAsteroid->push_shape( makeAsteroid( Point(rand()%screen.getWidth(), rand()%screen.getHeight()), ((float) rand() / (RAND_MAX))) );  
 }
 
-void drawAsteroids() {
+void simulateAsteroids() {
   while (lock.asteroid) {}
   lock.asteroid = true;
-  for(int i = 0; i < vektorAsteroid.size(); i++){
+  int i = 0;
+  for( auto& it:folderAsteroid->get_shapes()){
     int fx = 1;
     int fy = 1;
     if (i % 4 == 1) fx = -1;
@@ -303,22 +309,13 @@ void drawAsteroids() {
       fx = -1;
       fy = -1;
     }
-
-    //vektorAsteroid[i].RotatePoros(1, Point(screen.getWidth()/2, screen.getHeight()/2));
-    vektorAsteroid[i].moveBy((1-rand()%2)*fx, (1-rand()%2)*fy);
-    vektorAsteroid[i].Rotate(1);
-    vektorAsteroid[i].draw();
+    
+    it->moveBy((1-rand()%2)*fx, (1-rand()%2)*fy);
+    it->Rotate(1);
+    
+    ++i;
   }
   lock.asteroid = false;
-}
-
-void eraseShapesInVector(std::vector<Shapeclip> v, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
-    v[i].erase();
-  }
-  lock = false;
 }
 
 void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
@@ -326,19 +323,9 @@ void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
   lock = true;
   for (int i=0 ; i<v.size() ; i++) {
     v[i].scale(1.1, xpusat, ypusat);
-  }  
+  }
   lock = false;
 }
-
-void drawAll(std::vector<Shapeclip> &v, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
-    v[i].draw();
-  }  
-  lock = false;
-}
-
 
 void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
   while (lock) {}
@@ -347,15 +334,6 @@ void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
     v[i].scale(1/1.1, xpusat, ypusat);
   }
 	
-  lock = false;
-}
-
-void moveAll(std::vector<Shapeclip> &v, int x, int y, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
-    v[i].moveBy(x, y);
-  }
   lock = false;
 }
 
@@ -369,74 +347,31 @@ void *keylistener(void *null) {
 
         if (X == 'C') { // Right arrow
           screen.ClearScreen();
-          moveAll(vektorMatahari, 5, 0, lock.matahari);
-          moveAll(vektorPlanet, 5, 0, lock.planet);
-          moveAll(vektorSatelit, 5, 0, lock.satelite);
-          moveAll(vektorAsteroid, 5, 0, lock.asteroid);
+          mainFolder->moveBy( 5, 0 );
+          mainFolder->draw();
           //vektorMatahari[0].moveBy(5,0);
         } else if (X == 'D') { // Left arrow
           screen.ClearScreen();
-          moveAll(vektorMatahari, -5, 0, lock.matahari);
-          moveAll(vektorPlanet, -5, 0, lock.planet);
-          moveAll(vektorSatelit, -5, 0, lock.satelite);
-          moveAll(vektorAsteroid, -5, 0, lock.asteroid);
+          mainFolder->moveBy( -5, 0 );
+          mainFolder->draw();
         } else if (X == 'B') { // Down arrow
           screen.ClearScreen();
-          moveAll(vektorMatahari, 0, 5, lock.matahari);
-          moveAll(vektorPlanet, 0, 5, lock.planet);
-          moveAll(vektorSatelit, 0, 5, lock.satelite);
-          moveAll(vektorAsteroid, 0, 5, lock.asteroid);
+          mainFolder->moveBy( 0, 5 );
+          mainFolder->draw();
         } else if (X == 'A') { // Up arrow
           screen.ClearScreen();
-          moveAll(vektorMatahari, 0, -5, lock.matahari);
-          moveAll(vektorPlanet, 0, -5, lock.planet);
-          moveAll(vektorSatelit, 0, -5, lock.satelite);
-          moveAll(vektorAsteroid, 0, -5, lock.asteroid);
+          mainFolder->moveBy( 0, -5 );
+          mainFolder->draw();
         }
 
       } else if ((X == 'i') || (X == 'I')) { // Zoom in
         screen.ClearScreen();
-        zoomIn(vektorMatahari, lock.matahari);
-        zoomIn(vektorPlanet, lock.planet);
-        zoomIn(vektorSatelit, lock.satelite);
-        zoomIn(vektorAsteroid, lock.asteroid);
-        drawAll(vektorMatahari, lock.matahari);
-        drawAll(vektorPlanet, lock.planet);
-        drawAll(vektorSatelit, lock.satelite);
-        drawAll(vektorAsteroid, lock.asteroid);
-				
+        mainFolder->scale( 1.1, xpusat, ypusat );
+        mainFolder->draw();
       } else if ((X == 'o') || (X == 'O')) { // Zoom out
         screen.ClearScreen();
-        zoomOut(vektorMatahari, lock.matahari);
-        zoomOut(vektorPlanet, lock.planet);
-        zoomOut(vektorSatelit, lock.satelite);
-        zoomOut(vektorAsteroid, lock.asteroid);
-        drawAll(vektorMatahari, lock.matahari);
-        drawAll(vektorPlanet, lock.planet);
-        drawAll(vektorSatelit, lock.satelite);
-        drawAll(vektorAsteroid, lock.asteroid);
-      } else if (X == '1') {
-        if (matahariDrawn) {
-          eraseShapesInVector(vektorMatahari, lock.matahari);
-        }
-        matahariDrawn = !matahariDrawn;
-      } else if (X == '2') {
-        if (planetDrawn) {
-          eraseShapesInVector(vektorPlanet, lock.planet);
-        }
-        planetDrawn = !planetDrawn;
-      } else if (X == '3') {
-        if (sateliteDrawn) {
-          eraseShapesInVector(vektorSatelit, lock.satelite);
-        }
-        sateliteDrawn = !sateliteDrawn;
-      } else if (X == '4') {
-        if (asteroidDrawn) {
-          eraseShapesInVector(vektorAsteroid, lock.asteroid);
-        }
-        asteroidDrawn = !asteroidDrawn;
-      } else if (X == '5') {
-        makeAsteroids(1);
+        mainFolder->scale( 1/1.1, xpusat, ypusat );
+        mainFolder->draw();
       } else if ((X == 'x') || (X == 'X')) {
         exit(0);
       }
@@ -458,7 +393,7 @@ int main() {
   Point centerKotak((screen.getWidth()/2 + screen.getWidth()/8), (screen.getHeight()/4));
 
   //Matahari
-  make16segi(&vektorMatahari, Point(xpusat, ypusat-150), 1, Color(255,53,0), Color(255,255,0));
+  folderMatahari->push_shape( make16segi( Point(xpusat, ypusat-150), 1, Color(255,53,0), Color(255,255,0) ) );
 
   //Planet
   makePlanets();
@@ -470,8 +405,10 @@ int main() {
   //Asteroid
   makeAsteroids(4);
 
+  /*
   stars s1(4, Point(300, 300), 5, Color(255, 255, 255));
   vektorBintang.push_back(s1);
+  */
   
   screen.setColor(1200,500, 1, 0, 255, 0);
 
@@ -484,11 +421,12 @@ int main() {
 
   while(1){
     linedrawer2.drawBorder();
-    if (planetDrawn) drawPlanets();
-    if (matahariDrawn) drawMatahari();
-    drawSatelites();
-    drawStars();
-    if (asteroidDrawn) drawAsteroids();
+    simulatePlanets();
+    simulateMatahari();
+    simulateAsteroids();
+    mainFolder->draw();
+    int yyy = 2;
+    Folder::print(mainFolder, 80, yyy);
     usleep(5000);
   }
 
