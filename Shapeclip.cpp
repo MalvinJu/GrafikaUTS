@@ -47,7 +47,7 @@ void Shapeclip::moveBy(int deltaX, int deltaY){
 	}
 	center.moveBy(deltaX, deltaY);
 	floodfill_seed.moveBy(deltaX,deltaY);
-	draw();
+	//draw();
 }
 
 //rotate the object by theta degree clockwise
@@ -87,9 +87,7 @@ void Shapeclip::setFillColor(Color C){
 }
 //set Border Color to color c
 void Shapeclip::setBorderColor(Color c){
-	erase();
 	Border = c;
-	draw();
 }
 
 void Shapeclip::setCenter(Point P){
@@ -119,7 +117,7 @@ void Shapeclip::PlaneParabola(int theta, Point poros){
 		edges[i].rotatePoros(theta, poros);
 	}
 	floodfill_seed.rotatePoros(theta, poros);
-	draw();
+	//draw();
 }
 
 void Shapeclip::scale(double x, int xa, int ya){
