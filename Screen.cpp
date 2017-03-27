@@ -41,6 +41,8 @@ void Screen::setColor(int r, int c, int pixelSize, int red, int green, int blue)
 		for (int i = c; i < (c+pixelSize); i++) {
             for (int j = r; j < (r+pixelSize); j++) {
                 int location = (i+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (j+vinfo.yoffset) * finfo.line_length;
+            	if( *(fbp + location) != 0 || *(fbp + location+1) != 0 || *(fbp + location+2) != 0) return;
+
                 *(fbp + location) = blue;
                 *(fbp + location +1) = green;
                 *(fbp + location +2) = red;
@@ -57,6 +59,8 @@ void Screen::setColor(int r, int c, int pixelSize, Color color){
         for (int i = c; i < (c+pixelSize); i++) {
             for (int j = r; j < (r+pixelSize); j++) {
                 int location = (i+vinfo.xoffset) * (vinfo.bits_per_pixel/8) + (j+vinfo.yoffset) * finfo.line_length;
+            	if( *(fbp + location) != 0 || *(fbp + location+1) != 0 || *(fbp + location+2) != 0) return;
+
                 *(fbp + location) = color.getBlue();
                 *(fbp + location +1) = color.getGreen();
                 *(fbp + location +2) = color.getRed();

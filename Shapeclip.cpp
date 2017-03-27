@@ -67,8 +67,10 @@ void Shapeclip::Rotate(int theta){
 }
 
 void Shapeclip::erase(){
+	/*
 	linedrawer2.drawPolygon(edges,Color(0,0,0) );
 	linedrawer2.rasterFill(edges, Color(0,0,0) );
+	*/
 	//linedrawer2.floodFill4Seed(floodfill_seed.getX(), floodfill_seed.getY(), Border, Color(0,0,0));
 }
 void Shapeclip::draw(){

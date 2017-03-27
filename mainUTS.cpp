@@ -318,24 +318,6 @@ void simulateAsteroids() {
   lock.asteroid = false;
 }
 
-void zoomIn(std::vector<Shapeclip> &v, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
-    v[i].scale(1.1, xpusat, ypusat);
-  }
-  lock = false;
-}
-
-void zoomOut(std::vector<Shapeclip> &v, bool &lock) {
-  while (lock) {}
-  lock = true;
-  for (int i=0 ; i<v.size() ; i++) {
-    v[i].scale(1/1.1, xpusat, ypusat);
-  }
-	
-  lock = false;
-}
 
 // METODE HANDLER THREAD IO--------------------------------------------------------------------------------- //
 void *keylistener(void *null) {
@@ -420,6 +402,7 @@ int main() {
   screen.ClearScreen();
 
   while(1){
+    screen.ClearScreen();
     linedrawer2.drawBorder();
     simulatePlanets();
     simulateMatahari();
